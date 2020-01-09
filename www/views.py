@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from polls.models import Poll, Choice,TextPost
+from www.models import Poll, Choice,TextPost
 
 # Create your views here.
 def index(request):
@@ -9,3 +9,7 @@ def index(request):
     post1.tags = ['mongodb', 'mongoengine']
     post1.save()
     return HttpResponse("Hello, world. You're at the polls index.")
+  
+
+def hello(request):
+   return render(request, "hello.html", {})

@@ -33,7 +33,7 @@ def scrapeEachPost(url,thumbnail):
             
             for imageHtml in imagesHtmlList:
                 imagelink =  imageHtml.get('src');
-                images.append(imagelink)
+                images.append({"sourceUrl":imagelink,"publish":False})
        
         print('Total images',len(images))
         post = Post(title=title, source=source, url=url,images=images,thumbnail=thumbnail )
@@ -60,38 +60,3 @@ def scrapeMainPage():
 #     url = 'https://web.archive.org/web/20121007172955/https://www.nga.gov/collection/anZ' + str(i) + '.htm'
 #     pages.append(url)
 
-
-
-# def b2_authorize_account():
-#     import base64
-#     import json
-#     import urllib2
-
-#     id_and_key = 'applicationKeyId_value:47e9067135eb'
-#     basic_auth_string = 'Basic ' + base64.b64encode(id_and_key)
-#     headers = { 'Authorization': basic_auth_string }
-
-#     request = urllib2.Request(
-#         'https://api.backblazeb2.com/b2api/v2/b2_authorize_account',
-#         headers = headers
-#         )
-#     response = urllib2.urlopen(request)
-#     response_data = json.loads(response.read())
-#     response.close()
-
-# b2_authorize_account()
-
-# import json
-# import urllib2
-
-# api_url = "" # Provided by b2_authorize_account
-# account_authorization_token = "" # Provided by b2_authorize_account
-# bucket_id = "" # The ID of the bucket you want to upload your file to
-# request = urllib2.Request(
-# 	'%s/b2api/v2/b2_get_upload_url' % api_url,
-# 	json.dumps({ 'bucketId' : bucket_id }),
-# 	headers = { 'Authorization': account_authorization_token }
-# 	)
-# response = urllib2.urlopen(request)
-# response_data = json.loads(response.read())
-# response.close()
