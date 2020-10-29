@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+  server:
+    restart: always
+    stdin_open: true
+    image: sexy-girls:1.0
+    build:
+      context: ..
+      dockerfile: devops/Dockerfile
+    container_name: sexy-girls-server
+    # command: bash -c "python /app/manage.py"
+    volumes:
+      - ../server:/app
+    env_file:
+      - commons.env
+      - secrets.env
+    ports:
+      - 80:8000
+      - 443:8443
+    logging:
+      options:
+        max-size: 10m
+    expose:
+      - 80
+      - 443
+    networks:
+      network:
+        aliases:
+          - server
+
+networks:
+  network:
+    name: sexy-girls-network
