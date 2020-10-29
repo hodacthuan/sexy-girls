@@ -24,3 +24,6 @@ nano sexy-girls.env
 - http://s3xies.com/
 - loveygirl.cc
 - https://www.xsnvshen.com/
+
+## Acknowledgements
+- https://www.digitalocean.com/community/tutorials/how-to-scrape-web-pages-with-beautiful-soup-and-python-3
