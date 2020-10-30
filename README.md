@@ -16,14 +16,20 @@ nano sexy-girls.env
 ```
 
 ## Roadmap
-
-- https://www.kindgirls.com/
+Pages can be scrape
 - https://hotgirl.biz/
+- https://kissgoddess.com/
+- https://www.nvshens.org/
+- https://www.depvailon.com/
+- http://www.wloob.com/
 
+Pages for references
+- https://www.kindgirls.com/
 - https://www.instagram.com/s3xybabies/
 - http://s3xies.com/
 - loveygirl.cc
 - https://www.xsnvshen.com/
+- http://www.zjdtt.com/
 
 ## Acknowledgements
 - https://www.digitalocean.com/community/tutorials/how-to-scrape-web-pages-with-beautiful-soup-and-python-3
