@@ -5,26 +5,29 @@ import datetime
 
 
 class ImageInfo(EmbeddedDocument):
-    publish = BooleanField()
-    sourceUrl =StringField()
-    storeUrl = StringField()
+    public = BooleanField(default=True)
+    sourceUrl = StringField(required=True)
+    storePath = StringField()
 
 
-class Post(Document):
+class ModelInfo(EmbeddedDocument):
+    public = BooleanField(default=True)
+    sourceUrl = StringField(required=True)
+    name = StringField()
+
+
+class Album(Document):
     objects = QuerySetManager()
     title = StringField(required=True)
     source = StringField(required=True)
-    
-    url = StringField(required=True,unique=True)
-    thumbnail = StringField()
+    idFromSource = StringField()
+
+    url = StringField(required=True, unique=True)
+    thumbnail = EmbeddedDocumentField(ImageInfo)
     postedDate = DateTimeField(default=datetime.datetime.utcnow)
-    publish = BooleanField()
+    public = BooleanField(default=True)
     deleted = BooleanField()
     tags = ListField(StringField(max_length=2000))
     images = ListField(EmbeddedDocumentField(ImageInfo))
-    
-    content = StringField()
 
-
-
-
+    content = ListField(StringField())
