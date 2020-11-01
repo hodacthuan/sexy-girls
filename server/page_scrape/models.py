@@ -19,7 +19,10 @@ class ModelInfo(EmbeddedDocument):
     birthday = StringField()
     birthPlace = StringField()
     age = StringField()
+    nativeName = StringField()
     hobbies = ListField(StringField())
+    heightMeasurements = StringField()
+    about = StringField()
     meta = {'collection': 'album', 'strict': False}
 
 

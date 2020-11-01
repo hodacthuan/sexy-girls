@@ -15,6 +15,13 @@ nano sexy-girls.env
 ./up.sh sexy-girls
 ```
 
+### Up to production
+
+### Dev running
+```
+python3 server/manage.py
+```
+
 ## Roadmap
 Pages can be scrape
 - https://kissgoddess.com/
