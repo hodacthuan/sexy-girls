@@ -76,20 +76,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'sexybaby.wsgi.application'
 
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME':'sexy'
+        'NAME': 'sexy'
     },
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 
 # Password validation
@@ -141,6 +133,3 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/www/static/',
 ]
-
-
-import page_scrape
