@@ -8,6 +8,9 @@ from bs4 import BeautifulSoup, Tag, NavigableString
 from page_scrape.models import Album
 import requests
 import logging
+import mongoengine
+import page_scrape
+from page_scrape.commons import dataLogging, downloadAndSave
 
 originUrl = 'https://kissgoddess.com'
 galleryUrl = 'https://kissgoddess.com/gallery/'
@@ -140,10 +143,15 @@ def scrapeEachGallery():
     albumObjLi = scrapeListofAlbum()
 
     for album in albumObjLi:
-        if (album['url'] != 'https://kissgoddess.com/album/34158.html'):
+        if (album['url'] != 'https://kissgoddess.com/album/34159.html'):
             continue
 
         albumInDB = Album.objects(url=album['url'], source=source)
+
+        dataLogging(albumInDB[0], '')
+
+        downloadAndSave(
+            'https://pic.kissgoddess.com/gallery/27781/34159/s/032.jpg', 'test')
 
         if (len(albumInDB) == 0):
 
@@ -153,12 +161,13 @@ def scrapeEachGallery():
             album = Album(title=album['title'],
                           source=source,
                           url=album['url'],
+                          idFromSource=album['idFromSource'],
                           tags=album['tags'],
                           modelName=album['modelName'],
                           modelDisplayName=album['modelDisplayName'],
                           images=album['images'],
                           thumbnail=album['thumbnail'])
-            # album.save()
+            album.save()
 
 
 scrapeEachGallery()
