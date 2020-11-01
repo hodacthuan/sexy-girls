@@ -58,6 +58,8 @@ def scrapeImgInPg(url):
 
     album['modelName'] = html.find(
         class_='td-related-person').find(class_='td-related-peron-thumb').find('a').get('href').split('/')[2].split('.')[0]
+    album['modelDisplayName'] = html.find(
+        class_='td-related-person').find(class_='td-related-peron-thumb').find('a').get('title')
 
     return album
 
@@ -83,6 +85,7 @@ def scrapeAllImgInAlbum(album):
     if 'tags' in pgAlbum:
         album['tags'] = pgAlbum['tags']
     album['modelName'] = pgAlbum['modelName']
+    album['modelDisplayName'] = pgAlbum['modelDisplayName']
 
     for x in range(pgAlbum['totalPg']):
         time.sleep(0.2)
@@ -152,6 +155,7 @@ def scrapeEachGallery():
                           url=album['url'],
                           tags=album['tags'],
                           modelName=album['modelName'],
+                          modelDisplayName=album['modelDisplayName'],
                           images=album['images'],
                           thumbnail=album['thumbnail'])
             # album.save()

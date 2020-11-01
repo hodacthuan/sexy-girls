@@ -7,17 +7,20 @@ class ImageInfo(EmbeddedDocument):
     public = BooleanField(default=True)
     sourceUrl = StringField(required=True)
     storePath = StringField()
+    meta = {'collection': 'album', 'strict': False}
 
 
 class ModelInfo(EmbeddedDocument):
     public = BooleanField(default=True)
     sourceUrl = StringField(required=True)
+    imagePath = StringField()
     name = StringField(unique=True)
     displayName = StringField()
     birthday = StringField()
     birthPlace = StringField()
     age = StringField()
     hobbies = ListField(StringField())
+    meta = {'collection': 'album', 'strict': False}
 
 
 class Album(Document):
@@ -29,6 +32,7 @@ class Album(Document):
     url = StringField(required=True, unique=True)
     thumbnail = EmbeddedDocumentField(ImageInfo)
     modelName = StringField()
+    modelDisplayName = StringField()
     createdDate = DateTimeField(default=datetime.datetime.utcnow)
     public = BooleanField(default=True)
     deleted = BooleanField()
