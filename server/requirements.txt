@@ -1,6 +1,7 @@
 six
 bs4
 redis
+boto3==1.16.9
 django==3.0.5
 sqlparse==0.2.4
 djongo==1.3.3
@@ -8,7 +9,7 @@ pytest
 ipcalc
 demjson
 requests
-botocore
+botocore==1.19.9
 virtualenv
 mongoengine
 coloredlogs
