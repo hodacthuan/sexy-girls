@@ -1,6 +1,7 @@
 
 import coloredlogs
 import csv
+import uuid
 import time
 import random
 import requests
@@ -10,7 +11,7 @@ import requests
 import logging
 import mongoengine
 import page_scrape
-from page_scrape.commons import dataLogging, downloadAndSave
+from page_scrape.commons import dataLogging, downloadAndSave, uploadToAws
 
 originUrl = 'https://kissgoddess.com'
 galleryUrl = 'https://kissgoddess.com/gallery/'
@@ -20,7 +21,7 @@ coloredlogs.install()
 logging.info("It works!")
 
 
-def scrapeImgInPg(url):
+def scrapeImgInPg(url, albumId):
     """Scrape all images inside the url of album and return list of image object
     Args:
         url (str): url of album
@@ -41,10 +42,20 @@ def scrapeImgInPg(url):
     imgUrls = []
     for imgHtml in imgLiHtml:
         imgUrl = imgHtml.get('src')
-        if (imgUrl):
-            imgObj = {}
-            imgObj['sourceUrl'] = imgUrl
-            imgUrls.append(imgObj)
+        if imgUrl and (len(albumId) > 0):
+            imgPath = 'album/' + albumId + '/' + \
+                str(uuid.uuid4()).split('-')[0] + \
+                '.' + imgUrl.split('.')[len(imgUrl.split('.')) - 1]
+
+            uploaded = downloadAndSave(
+                imgUrl, imgPath)
+
+            if uploaded:
+                imgObj = {}
+                imgObj['sourceUrl'] = imgUrl
+                imgObj['storePath'] = imgPath
+                imgUrls.append(imgObj)
+
     album['images'] = imgUrls
 
     totalPg = html.find("div", {"id": "pages"}).find_all('a')
@@ -77,12 +88,13 @@ def scrapeAllImgInAlbum(album):
     """
     print('Scrape images in url:', album['url'])
 
-    pgAlbum = scrapeImgInPg(album['url'])
+    pgAlbum = scrapeImgInPg(album['url'], '')
 
     idFromSource = album['url'].split('/')[4].split('.')[0]
     if idFromSource.isnumeric():
         album['idFromSource'] = idFromSource
 
+    album['albumId'] = str(uuid.uuid4()).split('-')[0]
     album['images'] = []
     album['title'] = pgAlbum['title']
     if 'tags' in pgAlbum:
@@ -94,7 +106,7 @@ def scrapeAllImgInAlbum(album):
         time.sleep(0.2)
 
         pageUrl = album['url'].split('.html')[0] + '_' + str(x + 1) + '.html'
-        pgAlbum = scrapeImgInPg(pageUrl)
+        pgAlbum = scrapeImgInPg(pageUrl, album['albumId'])
         for imgObj in pgAlbum['images']:
             album['images'].append(imgObj)
 
@@ -143,15 +155,11 @@ def scrapeEachGallery():
     albumObjLi = scrapeListofAlbum()
 
     for album in albumObjLi:
-        if (album['url'] != 'https://kissgoddess.com/album/34159.html'):
+        if (album['url'] != 'https://kissgoddess.com/album/34153.html'):
             continue
 
         albumInDB = Album.objects(url=album['url'], source=source)
-
-        dataLogging(albumInDB[0], '')
-
-        downloadAndSave(
-            'https://pic.kissgoddess.com/gallery/27781/34159/s/032.jpg', 'test')
+        # dataLogging(albumInDB[0], '')
 
         if (len(albumInDB) == 0):
 
@@ -163,10 +171,12 @@ def scrapeEachGallery():
                           url=album['url'],
                           idFromSource=album['idFromSource'],
                           tags=album['tags'],
+                          albumId=album['albumId'],
                           modelName=album['modelName'],
                           modelDisplayName=album['modelDisplayName'],
                           images=album['images'],
                           thumbnail=album['thumbnail'])
+            print(album)
             album.save()
 
 

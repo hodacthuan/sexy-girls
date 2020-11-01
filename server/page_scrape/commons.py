@@ -6,8 +6,9 @@ import os
 from botocore.exceptions import NoCredentialsError
 import urllib.request
 
-ACCESS_KEY = os.environ['ADMIN_ACCESS_KEY_ID']
-SECRET_KEY = os.environ['ADMIN_SECRET_ACCESS_KEY']
+AWS_BUCKET = 'sexy-girls-bucket'
+AWS_ACCESS_KEY = os.environ['ADMIN_ACCESS_KEY_ID']
+AWS_SECRET_KEY = os.environ['ADMIN_SECRET_ACCESS_KEY']
 
 
 def dataLogging(obj, prefix=''):
@@ -26,26 +27,28 @@ def dataLogging(obj, prefix=''):
             print(prefix, key, ':', obj[key])
 
 
-def downloadAndSave(url, path):
-    urllib.request.urlretrieve(
-        url, "00000001.jpg")
-
-
-def upload_to_aws(local_file, bucket, s3_file):
-    s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-                      aws_secret_access_key=SECRET_KEY)
+def uploadToAws(filePath, s3FilePath):
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
+                      aws_secret_access_key=AWS_SECRET_KEY)
 
     try:
-        s3.upload_file(local_file, bucket, s3_file)
-        print("Upload Successful")
+        s3.upload_file(filePath, AWS_BUCKET, s3FilePath, ExtraArgs={
+                       'ContentType': 'image/jpeg'})
         return True
     except FileNotFoundError:
-        print("The file was not found")
+        print("The file was not found", filePath)
         return False
     except NoCredentialsError:
         print("Credentials not available")
         return False
 
 
-uploaded = upload_to_aws(
-    '00000001.jpg', 'sexy-girls-bucket', 'test/00000001.jpg')
+def downloadAndSave(url, path):
+    tempPath = '/tmp/' + path.split('.')[0]
+    tempFile = '/tmp/' + path
+    os.makedirs(tempPath)
+    urllib.request.urlretrieve(
+        url, tempFile)
+
+    return uploadToAws(
+        tempFile, path)

@@ -6,7 +6,7 @@ import datetime
 class ImageInfo(EmbeddedDocument):
     public = BooleanField(default=True)
     sourceUrl = StringField(required=True)
-    storePath = StringField()
+    storePath = StringField(required=True)
     meta = {'collection': 'album', 'strict': False}
 
 
@@ -31,7 +31,7 @@ class Album(Document):
     title = StringField(required=True)
     source = StringField(required=True)
     idFromSource = StringField(required=True)
-
+    albumId = StringField(required=True)
     url = StringField(required=True, unique=True)
     thumbnail = EmbeddedDocumentField(ImageInfo)
     modelName = StringField()
