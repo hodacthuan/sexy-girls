@@ -56,6 +56,9 @@ def scrapeImgInPg(url):
             if ~(tag in album['tags']):
                 album['tags'].append(tag)
 
+    album['modelName'] = html.find(
+        class_='td-related-person').find(class_='td-related-peron-thumb').find('a').get('href').split('/')[2].split('.')[0]
+
     return album
 
 
@@ -70,10 +73,16 @@ def scrapeAllImgInAlbum(album):
     print('Scrape images in url:', album['url'])
 
     pgAlbum = scrapeImgInPg(album['url'])
+
+    idFromSource = album['url'].split('/')[4].split('.')[0]
+    if idFromSource.isnumeric():
+        album['idFromSource'] = idFromSource
+
     album['images'] = []
     album['title'] = pgAlbum['title']
     if 'tags' in pgAlbum:
         album['tags'] = pgAlbum['tags']
+    album['modelName'] = pgAlbum['modelName']
 
     for x in range(pgAlbum['totalPg']):
         time.sleep(0.2)
@@ -128,12 +137,12 @@ def scrapeEachGallery():
     albumObjLi = scrapeListofAlbum()
 
     for album in albumObjLi:
-        if (album['url'] != 'https://kissgoddess.com/album/34147.html'):
+        if (album['url'] != 'https://kissgoddess.com/album/34158.html'):
             continue
 
-        postFoundInDB = Album.objects(url=album['url'], source=source)
+        albumInDB = Album.objects(url=album['url'], source=source)
 
-        if (len(postFoundInDB) == 0):
+        if (len(albumInDB) == 0):
 
             album = scrapeAllImgInAlbum(album)
             print(album)
@@ -142,9 +151,10 @@ def scrapeEachGallery():
                           source=source,
                           url=album['url'],
                           tags=album['tags'],
+                          modelName=album['modelName'],
                           images=album['images'],
                           thumbnail=album['thumbnail'])
-            album.save()
+            # album.save()
 
 
 scrapeEachGallery()
