@@ -2,6 +2,8 @@ import logging
 import mongoengine
 import page_scrape
 import boto3
+import uuid
+import time
 import shutil
 import os.path
 from os import path
@@ -67,3 +69,11 @@ def deleteTempPath(filePath):
         shutil.rmtree(tempPath)
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
+
+
+def getAlbumId():
+    return str(uuid.uuid4())
+
+
+def getImgId():
+    return str(uuid.uuid4()).split('-')[0]

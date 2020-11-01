@@ -11,7 +11,7 @@ import requests
 import logging
 import mongoengine
 import page_scrape
-from page_scrape.commons import dataLogging, downloadAndSave, uploadToAws, deleteTempPath
+from page_scrape.commons import dataLogging, downloadAndSave, uploadToAws, deleteTempPath, getAlbumId, getImgId
 
 originUrl = 'https://kissgoddess.com'
 galleryUrl = 'https://kissgoddess.com/gallery/'
@@ -39,13 +39,13 @@ def scrapeImgInPg(url, albumId):
         class_='td-post-header').find(class_='td-post-title').find(class_='entry-title').contents[0]
 
     imgLiHtml = html.find(class_='td-gallery-content').find_all('img')
-    imgUrls = []
+    imgObjs = []
     for imgHtml in imgLiHtml:
         imgUrl = imgHtml.get('src')
         if imgUrl and (len(albumId) > 0):
             imgPath = 'album/' + albumId
-            imgFile = str(uuid.uuid4()).split('-')[0] + \
-                '.' + imgUrl.split('.')[len(imgUrl.split('.')) - 1]
+            imgFile = getImgId() + '.' + \
+                imgUrl.split('.')[len(imgUrl.split('.')) - 1]
 
             uploaded = downloadAndSave(
                 imgUrl, imgPath, imgFile)
@@ -54,9 +54,9 @@ def scrapeImgInPg(url, albumId):
                 imgObj = {}
                 imgObj['sourceUrl'] = imgUrl
                 imgObj['storePath'] = imgPath + '/' + imgFile
-                imgUrls.append(imgObj)
+                imgObjs.append(imgObj)
 
-    album['images'] = imgUrls
+    album['images'] = imgObjs
 
     totalPg = html.find("div", {"id": "pages"}).find_all('a')
     album['totalPg'] = len(totalPg)-1
@@ -94,7 +94,7 @@ def scrapeAllImgInAlbum(album):
     if idFromSource.isnumeric():
         album['idFromSource'] = idFromSource
 
-    album['albumId'] = str(uuid.uuid4()).split('-')[0]
+    album['albumId'] = getAlbumId()
     album['images'] = []
     album['title'] = pgAlbum['title']
     if 'tags' in pgAlbum:
