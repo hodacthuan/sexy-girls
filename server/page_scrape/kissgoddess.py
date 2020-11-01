@@ -145,41 +145,49 @@ def scrapeAllImgInAlbum(album):
         for imgObj in pgAlbum['images']:
             album['images'].append(imgObj)
 
-    if 'thumbnail' in album:
+    if (not 'thumbnail' in album) and (len(album['images']) > 0):
         album['thumbnail'] = album['images'][0]
 
+    deleteTempPath('album/' + album['albumId'])
+
     return album
+
+
+def scrapeEachAlbum(album):
+    albumInDB = Album.objects(url=album['url'], source=source)
+
+    if (len(albumInDB) == 0):
+
+        album = scrapeAllImgInAlbum(album)
+        print(album)
+
+        album = Album(title=album['title'],
+                      source=source,
+                      url=album['url'],
+                      idFromSource=album['idFromSource'],
+                      tags=album['tags'],
+                      albumId=album['albumId'],
+                      modelName=album['modelName'],
+                      modelDisplayName=album['modelDisplayName'],
+                      images=album['images'],
+                      thumbnail=album['thumbnail'])
+        print(album)
+        # album.save()
+    else:
+        dataLogging(albumInDB[0], '')
 
 
 def scrapeEachGallery():
     albumObjLi = scrapeListofAlbum()
 
     for album in albumObjLi:
-        if (album['url'] != 'https://kissgoddess.com/album/34150.html'):
+        if (album['url'] != 'https://kissgoddess.com/album/34143.html'):
             continue
 
-        albumInDB = Album.objects(url=album['url'], source=source)
-
-        if (len(albumInDB) == 0):
-
-            album = scrapeAllImgInAlbum(album)
-            print(album)
-            deleteTempPath('album/' + album['albumId'])
-
-            album = Album(title=album['title'],
-                          source=source,
-                          url=album['url'],
-                          idFromSource=album['idFromSource'],
-                          tags=album['tags'],
-                          albumId=album['albumId'],
-                          modelName=album['modelName'],
-                          modelDisplayName=album['modelDisplayName'],
-                          images=album['images'],
-                          thumbnail=album['thumbnail'])
-            print(album)
-            # album.save()
-        else:
-            dataLogging(albumInDB[0], '')
+        scrapeEachAlbum(album)
 
 
-scrapeEachGallery()
+scrapeEachAlbum({
+    'url': 'https://kissgoddess.com/album/34025.html'
+})
+# scrapeEachGallery()

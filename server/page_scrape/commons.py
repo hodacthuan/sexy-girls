@@ -55,9 +55,10 @@ def downloadAndSave(url, filePath, fileName):
 
     if not(path.isdir(tempPath)):
         os.makedirs(tempPath)
-
-    urllib.request.urlretrieve(
-        url, tempFile)
+    try:
+        urllib.request.urlretrieve(url, tempFile)
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
 
     return uploadToAws(
         tempFile, filePath + '/' + fileName)
