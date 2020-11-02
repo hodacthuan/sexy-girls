@@ -11,14 +11,13 @@ import requests
 import logging
 import mongoengine
 import page_scrape
-from page_scrape.commons import dataLogging, downloadAndSave, uploadToAws, deleteTempPath, getAlbumId, getImgId
+from page_scrape.commons import dataLogging, downloadAndSave, uploadToAws, deleteTempPath, getAlbumId, getImgId, deleteAwsS3Dir, debug
 
 originUrl = 'https://kissgoddess.com'
-galleryUrl = 'https://kissgoddess.com/gallery/'
 source = 'kissgoddess'
 
 coloredlogs.install()
-logging.info("It works!")
+logging.info('Start to scrape: %s' % (source))
 
 
 def scrapeListofAlbum(listUrl):
@@ -121,7 +120,7 @@ def scrapeAllImgInAlbum(album):
     Returns:
         Object of image contain title and images scraped
     """
-    print('Scrape images in url:', album['url'])
+    debug('Scrape images in url: %s' % (album['url']))
 
     pgAlbum = scrapeImgInPg(album['url'], '')
 
@@ -157,7 +156,6 @@ def scrapeAllImgInAlbum(album):
 
 
 def scrapeEachAlbum(album):
-    print(type(album))
     """Scrape, save all images of album to S3 and Mongo DB
     Args:
         album (dict)
@@ -169,20 +167,24 @@ def scrapeEachAlbum(album):
     if (len(albumInDB) == 0):
 
         album = scrapeAllImgInAlbum(album)
-        print(album)
+        debug(album)
+        try:
+            album = Album(title=album['title'],
+                          source=source,
+                          url=album['url'],
+                          idFromSource=album['idFromSource'],
+                          tags=album['tags'],
+                          albumId=album['albumId'],
+                          modelName=album['modelName'],
+                          modelDisplayName=album['modelDisplayName'],
+                          images=album['images'],
+                          thumbnail=album['thumbnail'])
 
-        album = Album(title=album['title'],
-                      source=source,
-                      url=album['url'],
-                      idFromSource=album['idFromSource'],
-                      tags=album['tags'],
-                      albumId=album['albumId'],
-                      modelName=album['modelName'],
-                      modelDisplayName=album['modelDisplayName'],
-                      images=album['images'],
-                      thumbnail=album['thumbnail'])
-        print(album)
-        album.save()
+            album.save()
+        except:
+            debug('Delete album ' + album['albumId'])
+            deleteAwsS3Dir('album/' + album['albumId'])
+
     else:
         dataLogging(albumInDB[0], '')
 

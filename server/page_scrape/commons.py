@@ -7,13 +7,19 @@ import time
 import shutil
 import os.path
 from os import path
+import coloredlogs
 import os
 from botocore.exceptions import NoCredentialsError
 import urllib.request
+coloredlogs.install()
+
 
 AWS_BUCKET = 'sexy-girls-bucket'
 AWS_ACCESS_KEY = os.environ['ADMIN_ACCESS_KEY_ID']
 AWS_SECRET_KEY = os.environ['ADMIN_SECRET_ACCESS_KEY']
+
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
+                  aws_secret_access_key=AWS_SECRET_KEY)
 
 
 def dataLogging(obj, prefix=''):
@@ -32,9 +38,23 @@ def dataLogging(obj, prefix=''):
             print(prefix, key, ':', obj[key])
 
 
+def deleteAwsS3Dir(s3FilePath):
+    try:
+        s3.delete_object(
+            Bucket=AWS_BUCKET,
+            Key=s3FilePath
+        )
+
+        return True
+    except FileNotFoundError:
+        print("The file was not found")
+        return False
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
+
+
 def uploadToAws(filePath, s3FilePath):
-    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
-                      aws_secret_access_key=AWS_SECRET_KEY)
 
     try:
         s3.upload_file(filePath, AWS_BUCKET, s3FilePath, ExtraArgs={
@@ -78,3 +98,12 @@ def getAlbumId():
 
 def getImgId():
     return str(uuid.uuid4()).split('-')[0]
+
+
+def debug(value):
+    try:
+        environment = os.environ['ENVIRONMENT']
+        if environment == 'development':
+            logging.info(value)
+    except:
+        logging.info('Failed to debug')
