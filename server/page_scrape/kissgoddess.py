@@ -21,7 +21,7 @@ coloredlogs.install()
 logging.info("It works!")
 
 
-def scrapeListofAlbum():
+def scrapeListofAlbum(listUrl):
     """Scrape the gallery page and return list of album
     Args:
         None.
@@ -30,7 +30,7 @@ def scrapeListofAlbum():
     """
 
     html = BeautifulSoup(requests.get(
-        galleryUrl,
+        listUrl,
         verify=True
     ).text, 'html.parser')
 
@@ -145,8 +145,11 @@ def scrapeAllImgInAlbum(album):
         for imgObj in pgAlbum['images']:
             album['images'].append(imgObj)
 
-    if (not 'thumbnail' in album) and (len(album['images']) > 0):
-        album['thumbnail'] = album['images'][0]
+    if (not 'thumbnail' in album):
+        if (len(album['images']) > 0):
+            album['thumbnail'] = album['images'][0]
+        else:
+            album['thumbnail'] = {}
 
     deleteTempPath('album/' + album['albumId'])
 
@@ -154,6 +157,13 @@ def scrapeAllImgInAlbum(album):
 
 
 def scrapeEachAlbum(album):
+    print(type(album))
+    """Scrape, save all images of album to S3 and Mongo DB
+    Args:
+        album (dict)
+    Returns:
+        None
+    """
     albumInDB = Album.objects(url=album['url'], source=source)
 
     if (len(albumInDB) == 0):
@@ -172,13 +182,14 @@ def scrapeEachAlbum(album):
                       images=album['images'],
                       thumbnail=album['thumbnail'])
         print(album)
-        # album.save()
+        album.save()
     else:
         dataLogging(albumInDB[0], '')
 
 
 def scrapeEachGallery():
-    albumObjLi = scrapeListofAlbum()
+    listUrl = originUrl + '/gallery/'
+    albumObjLi = scrapeListofAlbum(listUrl)
 
     for album in albumObjLi:
         if (album['url'] != 'https://kissgoddess.com/album/34143.html'):
