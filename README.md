@@ -19,6 +19,8 @@ nano sexy-girls.env
 
 ### Dev running
 ```
+sudo apt install -y python3-pip
+pip3 install -r ./server/requirements.txt
 python3 server/manage.py
 ```
 
