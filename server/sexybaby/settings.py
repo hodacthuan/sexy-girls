@@ -87,8 +87,7 @@ WSGI_APPLICATION = 'sexybaby.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'sexy'
+        'ENGINE': '',
     },
 }
 
