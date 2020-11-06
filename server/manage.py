@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from sexybaby import settings
 
 
 def main():
@@ -18,5 +19,10 @@ def main():
 
 
 if __name__ == '__main__':
+
+    params = sys.argv
+    if params[1] == 'scrape':
+        from pageScrape import kissgoddess
+        kissgoddess.main()
+
     main()
-    import pageScrape

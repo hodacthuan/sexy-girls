@@ -16,15 +16,15 @@ nano sexy-girls.env
 
 ### Up to production
 
-### Dev running
+### Local - Scrape data
 ```
 sudo apt install -y python3-pip
 pip3 install -r ./server/requirements.txt
-python3 server/manage.py
+python3 server/manage.py scrape
 ```
-### Start web server
+### Local - Start web server
 ```
-python3 server/manage.py runserver
+./deploy.sh up local
 ```
 ### Crontab Add and running
 ```
