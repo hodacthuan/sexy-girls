@@ -27,7 +27,7 @@ function privateDockerLogin() {
 
 function upService() {
     # INPUT VARIABLE
-    DEPLOY_ENV=${2}
+    export DEPLOY_ENV=${2}
 
     ENVS=(local prod)
     [[ ! " ${ENVS[@]} " =~ " ${DEPLOY_ENV} " ]] && echo "PLEASE USE ENV: ${ENVS[@]}" && exit 0

@@ -12,6 +12,8 @@ services:
     # command: bash -c "python /app/manage.py"
     volumes:
       - ../server:/app
+    environment:
+      - DEPLOY_ENV=$DEPLOY_ENV
     env_file:
       - commons.env
       - secrets.env
