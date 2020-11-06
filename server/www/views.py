@@ -13,15 +13,15 @@ def index(request):
 def album(request, albumId):
     print('albumId', albumId)
     album = Album.objects(id=albumId)[0]
-    print(album.thumbnail.imgSourceUrl)
-    album.thumbnail.url = constants.BUCKET_PUBLIC_URL + \
-        album.thumbnail.imgStorePath
-    for index in range(len(album.images)):
+    print(album.albumThumbnail.imgSourceUrl)
+    album.albumThumbnail.url = constants.BUCKET_PUBLIC_URL + \
+        album.albumThumbnail.imgStorePath
+    for index in range(len(album.albumImages)):
 
-        album.images[index].url = constants.BUCKET_PUBLIC_URL + \
-            album.images[index].imgStorePath
+        album.albumImages[index].url = constants.BUCKET_PUBLIC_URL + \
+            album.albumImages[index].imgStorePath
 
-    print(album.images[1].url)
+    print(album.albumImages[1].url)
     # dataLogging(album, '')
 
     context = {

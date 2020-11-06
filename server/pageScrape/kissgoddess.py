@@ -44,7 +44,7 @@ def scrapeListofAlbum(listUrl):
             if (albumUrl):
                 album = {
                     'albumSourceUrl': albumUrl,
-                    'thumbnail': {
+                    'albumThumbnail': {
                         'imgSourceUrl': thnailUrl
                     }
                 }
@@ -89,7 +89,7 @@ def scrapeImgInPg(url, albumId):
                 imgObj['imgStorePath'] = imgPath + '/' + imgFile
                 imgObjs.append(imgObj)
 
-    album['images'] = imgObjs
+    album['albumImages'] = imgObjs
 
     totalPg = html.find("div", {"id": "pages"}).find_all('a')
     album['totalPg'] = len(totalPg)-1
@@ -97,11 +97,11 @@ def scrapeImgInPg(url, albumId):
     tagHtmls = html.find(class_='td-category').find_all('li',
                                                         {'class': 'entry-category'})
     if len(tagHtmls) > 0:
-        album['tags'] = []
+        album['albumTags'] = []
         for tagHtml in tagHtmls:
             tag = tagHtml.find('a').contents[0]
-            if not(tag in album['tags']):
-                album['tags'].append(tag)
+            if not(tag in album['albumTags']):
+                album['albumTags'].append(tag)
 
     album['modelName'] = html.find(
         class_='td-related-person').find(class_='td-related-peron-thumb').find('a').get('href').split('/')[2].split('.')[0]
@@ -128,10 +128,10 @@ def scrapeAllImgInAlbum(album):
         album['albumIdFromSource'] = idFromSource
 
     album['albumId'] = getAlbumId()
-    album['images'] = []
+    album['albumImages'] = []
     album['albumTitle'] = pgAlbum['albumTitle']
-    if 'tags' in pgAlbum:
-        album['tags'] = pgAlbum['tags']
+    if 'albumTags' in pgAlbum:
+        album['albumTags'] = pgAlbum['albumTags']
     album['modelName'] = pgAlbum['modelName']
     album['modelDisplayName'] = pgAlbum['modelDisplayName']
 
@@ -141,14 +141,14 @@ def scrapeAllImgInAlbum(album):
         pageUrl = album['albumSourceUrl'].split(
             '.html')[0] + '_' + str(x + 1) + '.html'
         pgAlbum = scrapeImgInPg(pageUrl, album['albumId'])
-        for imgObj in pgAlbum['images']:
-            album['images'].append(imgObj)
+        for imgObj in pgAlbum['albumImages']:
+            album['albumImages'].append(imgObj)
 
-    if (not 'thumbnail' in album):
-        if (len(album['images']) > 0):
-            album['thumbnail'] = album['images'][0]
+    if (not 'albumThumbnail' in album):
+        if (len(album['albumImages']) > 0):
+            album['albumThumbnail'] = album['albumImages'][0]
         else:
-            album['thumbnail'] = {}
+            album['albumThumbnail'] = {}
 
     deleteTempPath('album/' + album['albumId'])
 
@@ -174,12 +174,12 @@ def scrapeEachAlbum(album):
                           albumSource=source,
                           albumSourceUrl=album['albumSourceUrl'],
                           albumIdFromSource=album['albumIdFromSource'],
-                          tags=album['tags'],
+                          albumTags=album['albumTags'],
                           albumId=album['albumId'],
                           modelName=album['modelName'],
                           modelDisplayName=album['modelDisplayName'],
-                          images=album['images'],
-                          thumbnail=album['thumbnail'])
+                          albumImages=album['albumImages'],
+                          albumThumbnail=album['albumThumbnail'])
 
             album.save()
         except:
