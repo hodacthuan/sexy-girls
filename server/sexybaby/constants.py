@@ -1,6 +1,7 @@
 import os
 
 MONGODB_URL = os.environ['MONGODB_URL']
+AWS_BUCKET = os.environ['AWS_BUCKET']
 BUCKET_PUBLIC_URL = os.environ['BUCKET_PUBLIC_URL']
 AWS_ACCESS_KEY = os.environ['ADMIN_ACCESS_KEY_ID']
 AWS_SECRET_KEY = os.environ['ADMIN_SECRET_ACCESS_KEY']

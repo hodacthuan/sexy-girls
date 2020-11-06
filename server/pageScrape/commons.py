@@ -1,3 +1,4 @@
+from sexybaby import constants
 import logging
 import mongoengine
 import pageScrape
@@ -13,13 +14,8 @@ from botocore.exceptions import NoCredentialsError
 import urllib.request
 coloredlogs.install()
 
-
-AWS_BUCKET = 'sexy-girls-bucket'
-AWS_ACCESS_KEY = os.environ['ADMIN_ACCESS_KEY_ID']
-AWS_SECRET_KEY = os.environ['ADMIN_SECRET_ACCESS_KEY']
-
-s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
-                  aws_secret_access_key=AWS_SECRET_KEY)
+s3 = boto3.client('s3', aws_access_key_id=constants.AWS_ACCESS_KEY,
+                  aws_secret_access_key=constants.AWS_SECRET_KEY)
 
 
 def dataLogging(obj, prefix=''):
@@ -41,7 +37,7 @@ def dataLogging(obj, prefix=''):
 def deleteAwsS3Dir(s3FilePath):
     try:
         s3.delete_object(
-            Bucket=AWS_BUCKET,
+            Bucket=constants.AWS_BUCKET,
             Key=s3FilePath
         )
 
@@ -57,7 +53,7 @@ def deleteAwsS3Dir(s3FilePath):
 def uploadToAws(filePath, s3FilePath):
 
     try:
-        s3.upload_file(filePath, AWS_BUCKET, s3FilePath, ExtraArgs={
+        s3.upload_file(filePath, constants.AWS_BUCKET, s3FilePath, ExtraArgs={
                        'ContentType': 'image/jpeg'})
         return True
     except FileNotFoundError:
