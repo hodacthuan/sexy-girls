@@ -31,6 +31,7 @@ class ModelInfo(EmbeddedDocument):
 class Album(Document):
     objects = QuerySetManager()
     albumTitle = StringField(required=True)
+    albumDisplayTitle = StringField(required=True)
     albumIsPublic = BooleanField(default=True)
     albumSource = StringField(required=True)
     albumIdFromSource = StringField(required=True)

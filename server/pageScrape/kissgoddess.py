@@ -11,6 +11,7 @@ import requests
 import logging
 import mongoengine
 import pageScrape
+from slugify import slugify
 from pageScrape.commons import dataLogging, downloadAndSave, uploadToAws, deleteTempPath, getAlbumId, getImgId, deleteAwsS3Dir, debug
 
 originUrl = 'https://kissgoddess.com'
@@ -68,7 +69,7 @@ def scrapeImgInPg(url, albumId):
         verify=True).text, 'html.parser')
 
     album = {}
-    album['albumTitle'] = html.find(
+    album['albumDisplayTitle'] = html.find(
         class_='td-post-header').find(class_='td-post-title').find(class_='entry-title').contents[0]
 
     imgLiHtml = html.find(class_='td-gallery-content').find_all('img')
@@ -129,7 +130,10 @@ def scrapeAllImgInAlbum(album):
 
     album['albumId'] = getAlbumId()
     album['albumImages'] = []
-    album['albumTitle'] = pgAlbum['albumTitle']
+    album['albumDisplayTitle'] = pgAlbum['albumDisplayTitle']
+    album['albumTitle'] = slugify(
+        pgAlbum['albumDisplayTitle'], to_lower=True)
+
     if 'albumTags' in pgAlbum:
         album['albumTags'] = pgAlbum['albumTags']
     album['modelName'] = pgAlbum['modelName']
@@ -172,6 +176,7 @@ def scrapeEachAlbum(album):
         debug(album)
         try:
             album = Album(albumTitle=album['albumTitle'],
+                          albumDisplayTitle=album['albumDisplayTitle'],
                           albumSource=source,
                           albumSourceUrl=album['albumSourceUrl'],
                           albumIdFromSource=album['albumIdFromSource'],

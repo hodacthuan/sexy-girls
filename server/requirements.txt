@@ -14,5 +14,6 @@ mongoengine
 coloredlogs
 python-dotenv
 django-crontab
+awesome-slugify
 python-telegram-bot
 django-rest-framework-mongoengine
