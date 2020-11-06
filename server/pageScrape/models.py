@@ -4,14 +4,14 @@ import datetime
 
 
 class ImageInfo(EmbeddedDocument):
-    public = BooleanField(default=True)
+    imgIsPublic = BooleanField(default=True)
     sourceUrl = StringField(required=True)
     storePath = StringField(required=True)
     meta = {'collection': 'album', 'strict': False}
 
 
 class ModelInfo(EmbeddedDocument):
-    public = BooleanField(default=True)
+    modelIsPublic = BooleanField(default=True)
     sourceUrl = StringField(required=True)
     imagePath = StringField()
     name = StringField(unique=True)
@@ -29,6 +29,7 @@ class ModelInfo(EmbeddedDocument):
 class Album(Document):
     objects = QuerySetManager()
     title = StringField(required=True)
+    albumIsPublic = BooleanField(default=True)
     source = StringField(required=True)
     idFromSource = StringField(required=True)
     albumId = StringField(required=True)
@@ -37,10 +38,8 @@ class Album(Document):
     modelName = StringField()
     modelDisplayName = StringField()
     createdDate = DateTimeField(default=datetime.datetime.utcnow)
-    public = BooleanField(default=True)
     deleted = BooleanField()
     tags = ListField(StringField(max_length=2000))
     images = ListField(EmbeddedDocumentField(ImageInfo))
-
     content = ListField(StringField())
     meta = {'collection': 'album', 'strict': False}
