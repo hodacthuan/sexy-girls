@@ -27,12 +27,11 @@ def albums(request, albumTitle):
         album.albumThumbnail.imgStorePath
 
     for index in range(len(album.albumImages)):
-
-        album.albumImages[index].url = constants.BUCKET_PUBLIC_URL + \
-            album.albumImages[index].imgStorePath
-
-    print(album.albumImages[1].url)
-    # dataLogging(album, '')
+        album.albumImages[index].url = constants.IMAGE_HOST + '/image/' + \
+            album.albumTitle + '/' + \
+            album.albumTitle + '-' + \
+            album.albumImages[index].imgNo + '.' + \
+            album.albumImages[index].imgExtension
 
     context = {
         'album': album

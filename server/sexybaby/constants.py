@@ -9,3 +9,11 @@ TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
 IMAGE_STORAGE = os.path.join(os.path.dirname(
     __file__), '../tempStorages/images/')
+
+DEPLOY_ENV = 'local'
+if os.environ.get('DEPLOY_ENV') is not None:
+    DEPLOY_ENV = os.environ['DEPLOY_ENV']
+
+IMAGE_HOST = os.environ['LOCAL_IMAGE_HOST']
+if DEPLOY_ENV == 'prod':
+    IMAGE_HOST = os.environ['PROD_IMAGE_HOST']
