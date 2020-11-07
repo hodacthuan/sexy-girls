@@ -74,8 +74,8 @@ def scrapeImgInPg(url, albumId):
         imgUrl = imgHtml.get('src')
         if imgUrl and (len(albumId) > 0):
             imgPath = 'album/' + albumId
-            imgFile = getImgId() + '.' + \
-                imgUrl.split('.')[len(imgUrl.split('.')) - 1]
+            imgExtension = imgUrl.split('.')[len(imgUrl.split('.')) - 1]
+            imgFile = getImgId() + '.' + imgExtension
 
             uploaded = downloadAndSaveToS3(
                 imgUrl, imgPath, imgFile)
@@ -84,6 +84,7 @@ def scrapeImgInPg(url, albumId):
                 imgObj = {}
                 imgObj['imgSourceUrl'] = imgUrl
                 imgObj['imgStorePath'] = imgPath + '/' + imgFile
+                imgObj['imgExtension'] = imgExtension
                 imgObjs.append(imgObj)
 
     album['albumImages'] = imgObjs

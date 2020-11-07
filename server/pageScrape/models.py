@@ -9,6 +9,7 @@ class ImageInfo(EmbeddedDocument):
     imgIsPublic = BooleanField(default=True)
     imgSourceUrl = StringField(required=True)
     imgStorePath = StringField(required=True)
+    imgExtension = StringField(required=True)
 
     meta = {'collection': 'images', 'strict': False}
 
