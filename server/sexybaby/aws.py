@@ -46,3 +46,8 @@ def uploadToAws(filePath, s3FilePath):
     except NoCredentialsError:
         print("Credentials not available")
         return False
+
+
+def copyFromS3(s3FilePath, filePath):
+
+    s3.download_file(constants.AWS_BUCKET, s3FilePath, filePath)

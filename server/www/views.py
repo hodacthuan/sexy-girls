@@ -8,10 +8,8 @@ import pageScrape
 from sexybaby.commons import dataLogging
 from sexybaby import constants
 import logging
+from sexybaby import commons
 logger = logging.getLogger(__name__)
-
-IMAGE_STORAGE = os.path.join(os.path.dirname(
-    __file__), '../tempStorages/images/')
 
 
 def hello(request):
@@ -19,11 +17,12 @@ def hello(request):
 
 
 def images(request, imagePath, imageFileName):
-    return serve(request, imageFileName, document_root=IMAGE_STORAGE+imagePath)
+    return serve(request, imageFileName, document_root=constants.IMAGE_STORAGE+imagePath)
 
 
 def albums(request, albumTitle):
     album = Album.objects(albumTitle=albumTitle)[0]
+    commons.copyAlbumFromS3ToServer(album)
     album.albumThumbnail.url = constants.BUCKET_PUBLIC_URL + \
         album.albumThumbnail.imgStorePath
 

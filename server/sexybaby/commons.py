@@ -13,8 +13,9 @@ import coloredlogs
 import os
 from botocore.exceptions import NoCredentialsError
 import urllib.request
+from .aws import copyFromS3
 coloredlogs.install()
-
+logger = logging.getLogger(__name__)
 s3 = boto3.client('s3', aws_access_key_id=constants.AWS_ACCESS_KEY,
                   aws_secret_access_key=constants.AWS_SECRET_KEY)
 
@@ -49,6 +50,17 @@ def downloadAndSaveToS3(url, filePath, fileName):
 
     return uploadToAws(
         tempFile, filePath + '/' + fileName)
+
+
+def copyAlbumFromS3ToServer(album):
+    storePath = constants.IMAGE_STORAGE + '/' + album['albumTitle']
+    if not(path.isdir(storePath)):
+        os.makedirs(storePath)
+
+        for image in album['albumImages']:
+
+            copyFromS3(image['imgStorePath'],
+                       storePath + '/' + album['albumTitle'] + '-' + image['imgNo']+'.jpg')
 
 
 def deleteTempPath(filePath):

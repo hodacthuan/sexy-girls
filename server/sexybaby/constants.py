@@ -7,3 +7,5 @@ AWS_ACCESS_KEY = os.environ['ADMIN_ACCESS_KEY_ID']
 AWS_SECRET_KEY = os.environ['ADMIN_SECRET_ACCESS_KEY']
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
+IMAGE_STORAGE = os.path.join(os.path.dirname(
+    __file__), '../tempStorages/images/')
