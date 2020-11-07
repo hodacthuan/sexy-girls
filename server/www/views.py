@@ -4,18 +4,19 @@ from pageScrape.models import Album
 import pageScrape
 from pageScrape.commons import dataLogging
 from sexybaby import constants
+import logging
+logger = logging.getLogger(__name__)
 
 
-def index(request):
-    return HttpResponse("Hello, world. ")
+def hello(request):
+    return render(request, "hello.html")
 
 
-def album(request, albumId):
-    print('albumId', albumId)
-    album = Album.objects(id=albumId)[0]
-    print(album.albumThumbnail.imgSourceUrl)
+def album(request, albumTitle):
+    album = Album.objects(albumTitle=albumTitle)[0]
     album.albumThumbnail.url = constants.BUCKET_PUBLIC_URL + \
         album.albumThumbnail.imgStorePath
+
     for index in range(len(album.albumImages)):
 
         album.albumImages[index].url = constants.BUCKET_PUBLIC_URL + \

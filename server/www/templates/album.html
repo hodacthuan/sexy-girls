@@ -3,11 +3,11 @@
 {% block page_content %}
 
 <h1 class="card-text">{{ album.albumDisplayTitle }}</h1>
-<img width='200' src="{{album.thumbnail.url}}">
+<img width='200' src="{{album.albumThumbnail.url}}">
 
 <div class="container">
     <div class="row justify-content-center">
-        {% for image in album.images %}
+        {% for image in album.albumImages %}
         <img class="img-fluid" style="margin-bottom: 10px;max-width: 900px;" src="{{image.url}}">
         {% endfor %}
     </div>

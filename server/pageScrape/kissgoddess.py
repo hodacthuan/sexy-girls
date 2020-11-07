@@ -45,9 +45,6 @@ def scrapeListofAlbum(listUrl):
             if (albumUrl):
                 album = {
                     'albumSourceUrl': albumUrl,
-                    'albumThumbnail': {
-                        'imgSourceUrl': thnailUrl
-                    }
                 }
 
                 albumLi.append(album)
