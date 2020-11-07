@@ -9,7 +9,8 @@ class ImageInfo(EmbeddedDocument):
     imgIsPublic = BooleanField(default=True)
     imgSourceUrl = StringField(required=True)
     imgStorePath = StringField(required=True)
-    meta = {'collection': 'album', 'strict': False}
+
+    meta = {'collection': 'images', 'strict': False}
 
 
 class ModelInfo(EmbeddedDocument):
@@ -25,7 +26,8 @@ class ModelInfo(EmbeddedDocument):
     modelHobbies = ListField(StringField())
     modelHeightMeasurements = StringField()
     modelAbout = StringField()
-    meta = {'collection': 'album', 'strict': False}
+
+    meta = {'collection': 'models', 'strict': False}
 
 
 class Album(Document):
@@ -45,4 +47,4 @@ class Album(Document):
     modelDisplayName = StringField()
     createdDate = DateTimeField(default=datetime.datetime.utcnow)
 
-    meta = {'collection': 'album', 'strict': False}
+    meta = {'collection': 'albums', 'strict': False}
