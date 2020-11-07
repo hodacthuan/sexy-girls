@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'sexybaby.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'databasesTemp.sqlite3',
+        'NAME': 'tempDatabases.sqlite3',
     }
 }
 

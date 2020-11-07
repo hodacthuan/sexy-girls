@@ -1,2 +1,3 @@
 *__pycache__*
-databasesTemp.sqlite3
+tempDatabases.sqlite3
+tempStorages
