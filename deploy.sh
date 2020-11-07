@@ -34,6 +34,8 @@ function upService() {
 
     docker-compose -f devops/docker-compose.yml down
 
+    cp server/databases.sqlite3 server/databasesTemp.sqlite3
+
     case "${DEPLOY_ENV}" in
     local)
         
