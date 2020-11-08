@@ -12,8 +12,28 @@ from sexybaby import commons
 logger = logging.getLogger(__name__)
 
 
+def home(request):
+    return render(request, "home.html")
+
+
+def trending(request):
+    return render(request, "trending.html")
+
+
 def hello(request):
     return render(request, "hello.html")
+
+
+def gallery(request):
+    return render(request, "gallery.html")
+
+
+def about(request):
+    return render(request, "about.html")
+
+
+def models(request):
+    return render(request, "models.html")
 
 
 def images(request, imagePath, imageFileName):
@@ -27,7 +47,7 @@ def albums(request, albumTitle):
         album.albumThumbnail.imgStorePath
 
     for index in range(len(album.albumImages)):
-        album.albumImages[index].url = constants.IMAGE_HOST + '/image/' + \
+        album.albumImages[index].url = '/image/' + \
             album.albumTitle + '/' + \
             album.albumTitle + '-' + \
             album.albumImages[index].imgNo + '.' + \

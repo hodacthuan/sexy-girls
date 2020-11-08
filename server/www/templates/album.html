@@ -2,14 +2,104 @@
 {% load static %}
 {% block page_content %}
 
-<h1 class="card-text">{{ album.albumDisplayTitle }}</h1>
-<img width='200' src="{{album.albumThumbnail.url}}">
+<!-- Bootstrap core JavaScript -->
+<script src="static/vendor/jquery/jquery.min.js"></script>
+<script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<main role="main" class="container">
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Photos</a></li>
+        <li class="breadcrumb-item"><a href="#">Summer 2017</a></li>
+        <li class="breadcrumb-item"><a href="#">Italy</a></li>
+        <li class="breadcrumb-item active">Rome</li>
+    </ul>
 
-<div class="container">
+    <div class="jumbotron">
+        <h1>{{ album.albumDisplayTitle }}</h1>
+        <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll,
+            it will remain fixed to the top of your browser's viewport.</p>
+        <a class="btn btn-lg btn-primary" href="../../components/navbar/" role="button">View navbar docs &raquo;</a>
+    </div>
+
     <div class="row justify-content-center">
         {% for image in album.albumImages %}
         <img class="img-fluid" style="margin-bottom: 10px;max-width: 900px;" src="{{image.url}}">
         {% endfor %}
     </div>
-</div>
+
+    <ul class="pagination justify-content-center" style="margin:20px 0">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </ul>
+
+    <!-- Page Features -->
+    <div class="row text-center">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+                <div class="card-body">
+                    <h4 class="card-title">Card title</h4>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse
+                        necessitatibus neque.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Find Out More!</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+                <div class="card-body">
+                    <h4 class="card-title">Card title</h4>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni
+                        sapiente, tempore debitis beatae culpa natus architecto.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Find Out More!</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+                <div class="card-body">
+                    <h4 class="card-title">Card title</h4>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse
+                        necessitatibus neque.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Find Out More!</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+                <div class="card-body">
+                    <h4 class="card-title">Card title</h4>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni
+                        sapiente, tempore debitis beatae culpa natus architecto.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Find Out More!</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.row -->
+</main>
+
+
+
+
 {% endblock %}
