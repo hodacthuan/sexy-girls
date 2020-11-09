@@ -49,6 +49,8 @@ Pages can be scrape
 - http://www.wloob.com/         :85k
 - https://www.24cos.com/        :Not enough
 - http://asianboobsdaily.com/   :NOt enough
+- https://www.youhuoxz.com/     :72k
+- https://www.mn5.cc/           :190k
 
 Pages for references
 - https://www.kindgirls.com/
