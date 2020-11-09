@@ -36,7 +36,7 @@ python3 server/manage.py crontab remove
 ## Roadmap
 Pages can be scrape
 
-| Website   |      Are      |  Notes |
+| Website   |      View/Month      |  Notes |
 |---------- |-------------: |:------|
 |https://kissgoddess.com/     |  956k       | In progress
 |https://www.xiurenji.com/     |100k
@@ -61,4 +61,6 @@ Pages can be scrape
 |http://www.zjdtt.com/         |Not enough
 
 ## Acknowledgements
-- https://www.digitalocean.com/community/tutorials/how-to-scrape-web-pages-with-beautiful-soup-and-python-3
+- [Get Started With Django Part 1: Build a Portfolio App](https://realpython.com/get-started-with-django-1/)
+- [Mongoengine Fields](https://docs.mongoengine.org/apireference.html#fields)
+- [How To Scrape Web Pages with Beautiful Soup and Python 3](https://www.digitalocean.com/community/tutorials/how-to-scrape-web-pages-with-beautiful-soup-and-python-3)
