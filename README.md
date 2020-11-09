@@ -13,18 +13,49 @@ cd devops-infrastructure/mongodb
 nano sexy-girls.env
 ./up.sh sexy-girls
 ```
+### Source code clone
+```
+ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
 
-### Up to production
+```
+Add SSH key
+```bash
+nano ~/.ssh/id_rsa
+```
+Apply SSH key
+```bash
+ssh-add ~/.ssh/id_rsa
+sudo chmod 400 ~/.ssh/id_rsa
+```
+Clone source code
+```
+git clone git@github.com:hodacthuan/sexy-girls.git
+cd sexy-girls
+```
+### Server Credentials
+Add credential to file
+```
+nano devops/secrets.env
+
+```
+### Production - Start webserver
+
+```
+./deploy.sh build
+./deploy.sh up prod
+```
+
+### Local - Start web server
+```
+./deploy.sh build
+./deploy.sh up local
+```
 
 ### Local - Scrape data
 ```
 sudo apt install -y python3-pip
 pip3 install -r ./server/requirements.txt
 python3 server/manage.py scrape
-```
-### Local - Start web server
-```
-./deploy.sh up local
 ```
 ### Crontab Add and running
 ```
