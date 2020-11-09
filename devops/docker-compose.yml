@@ -1,15 +1,34 @@
 version: "3.7"
 
 services:
+  nginx:
+    image: sg-nginx:1.0
+    build:
+      context: ..
+      dockerfile: devops/Dockerfile-nginx
+    container_name: sg-nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ../server/static:/home/app/microservice/static
+    depends_on:
+      - server
+    restart: on-failure
+    networks:
+      network:
+        aliases:
+          - nginx
   server:
     restart: always
     stdin_open: true
-    image: sexy-girls:1.0
+    image: sg-server:1.0
     build:
       context: ..
-      dockerfile: devops/Dockerfile
-    container_name: sexy-girls-server
+      dockerfile: devops/Dockerfile-server
+    container_name: sg-server
     command: python3 /app/manage.py runserver 0.0.0.0:8000
+    # command: daphne sexybaby.asgi:application -b 0.0.0.0 -p 8000
     volumes:
       - ../server:/app
     environment:
@@ -17,15 +36,11 @@ services:
     env_file:
       - commons.env
       - secrets.env
-    ports:
-      - 80:8000
-      - 443:8443
     logging:
       options:
         max-size: 10m
     expose:
-      - 80
-      - 443
+      - 8000
     networks:
       network:
         aliases:

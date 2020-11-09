@@ -1,7 +1,12 @@
 FROM python:3.6.10-slim
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
+
+RUN apt update
+RUN apt install -y curl
 
 RUN /usr/local/bin/python -m pip install --upgrade pip
 

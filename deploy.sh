@@ -79,7 +79,7 @@ case $COMMAND in
         ;;
 
     exec)
-        docker-compose -f devops/docker-compose.yml exec ${2} bash
+        docker-compose -f devops/docker-compose.yml exec ${2} sh
         [ $? -ne 0 ] && echo -e "\nPLEASE USE:\n"$(docker-compose -f devops/docker-compose.yml ps --services) "\n" && exit 0
         ;;
 
