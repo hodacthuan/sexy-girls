@@ -20,10 +20,12 @@ class ImageInfo(EmbeddedDocument):
 
 class ModelInfo(EmbeddedDocument):
     modelIsPublic = BooleanField(default=True)
-    modelSourceUrl = StringField(required=True)
-    modelImagePath = StringField()
     modelName = StringField(unique=True)
+    modelCountry = StringField(unique=True)
     modelDisplayName = StringField()
+    modelType = StringField()
+    modelSourceUrl = StringField(required=True)
+    modelImage = EmbeddedDocumentField(ImageInfo)
     modelBirthday = StringField()
     modelBirthPlace = StringField()
     modelAge = StringField()
@@ -31,6 +33,9 @@ class ModelInfo(EmbeddedDocument):
     modelHobbies = ListField(StringField())
     modelHeightMeasurements = StringField()
     modelAbout = StringField()
+    modelSocialInstagram = StringField()
+    modelSocialFacebook = StringField()
+    modelTags = ListField(StringField(max_length=2000))
 
     meta = {'collection': 'models', 'strict': False}
 
@@ -49,7 +54,7 @@ class Album(Document):
     albumImages = ListField(EmbeddedDocumentField(ImageInfo))
     albumContent = ListField(StringField())
     modelName = StringField()
-    modelDisplayName = StringField()
+    modelId = StringField()
     createdDate = DateTimeField(default=datetime.datetime.utcnow)
 
     meta = {'collection': 'albums', 'strict': False}
