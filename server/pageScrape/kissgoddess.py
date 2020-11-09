@@ -120,7 +120,7 @@ def albumScrapeImageInPage(url, albumId):
     return album
 
 
-def albumScrapeAllImageInAlbum(album):
+def albumScrapeAllImageInAlbum(albumUrl):
     """Scrape all images in album and return list of image object
     Args:
         url(str): url of album
@@ -128,6 +128,15 @@ def albumScrapeAllImageInAlbum(album):
     Returns:
         Object of image contain title and images scraped
     """
+    albumInDB = Album.objects(
+        albumSourceUrl=albumUrl, albumSource=source)
+
+    if not (len(albumInDB) == 0):
+        dataLogging(albumInDB[0], '')
+        return
+
+    album = dict()
+    album['albumSourceUrl'] = albumUrl
     debug('Scrape images in url: %s' % (album['albumSourceUrl']))
 
     pgAlbum = albumScrapeImageInPage(album['albumSourceUrl'], None)
@@ -166,33 +175,13 @@ def albumScrapeAllImageInAlbum(album):
 
     deleteTempPath('album/' + album['albumId'])
 
-    return album
+    try:
+        Album(**album).save()
 
-
-def albumScrapeEachAlbum(album):
-    """Scrape, save all images of album to S3 and Mongo DB
-    Args:
-        album (dict)
-    Returns:
-        None
-    """
-    albumInDB = Album.objects(
-        albumSourceUrl=album['albumSourceUrl'], albumSource=source)
-
-    if (len(albumInDB) == 0):
-
-        album = albumScrapeAllImageInAlbum(album)
-        debug(album)
-        try:
-            Album(**album).save()
-
-        except:
-            logger.error('Cannot save to DB:' + album['albumSourceUrl'])
-            debug('Delete album ' + album['albumId'])
-            deleteAwsS3Dir('album/' + album['albumId'])
-
-    else:
-        dataLogging(albumInDB[0], '')
+    except:
+        logger.error('Cannot save to DB:' + album['albumSourceUrl'])
+        debug('Delete album ' + album['albumId'])
+        deleteAwsS3Dir('album/' + album['albumId'])
 
 
 def modelScrapeAllModelsInfo(modelUrl):
@@ -206,7 +195,8 @@ def modelScrapeAllModelsInfo(modelUrl):
     modelInDB = ModelInfo.objects(
         modelSourceUrl=modelUrl, modelSource=source)
 
-    if ~(len(modelInDB) == 0):
+    if not (len(modelInDB) == 0):
+        dataLogging(modelInDB[0], '')
         return
 
     html = BeautifulSoup(requests.get(
@@ -311,14 +301,12 @@ def scrapeEachGallery():
         if (album['albumSourceUrl'] != 'https://kissgoddess.com/album/34143.html'):
             continue
 
-        albumScrapeEachAlbum(album)
+        albumScrapeAllImageInAlbum(album)
 
 
 def main():
     logging.info('Start to scrape: %s' % (source))
 
-    albumScrapeEachAlbum({
-        'albumSourceUrl': 'https://kissgoddess.com/album/34171.html'
-    })
+    albumScrapeAllImageInAlbum('https://kissgoddess.com/album/34171.html')
     modelScrapeAllModelsInfo('https://kissgoddess.com/people/xie-zhi-xin.html')
     # scrapeEachGallery()
