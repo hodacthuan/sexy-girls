@@ -114,7 +114,7 @@ def albumScrapeImageInPage(url, albumId):
             if not(tag in album['albumTags']):
                 album['albumTags'].append(tag)
 
-    album['modelName'] = html.find(
+    album['albumModelName'] = html.find(
         class_='td-related-person').find(class_='td-related-peron-thumb').find('a').get('href').split('/')[2].split('.')[0]
 
     return album
@@ -155,7 +155,7 @@ def albumScrapeAllImageInAlbum(albumUrl):
 
     if 'albumTags' in pgAlbum:
         album['albumTags'] = pgAlbum['albumTags']
-    album['modelName'] = pgAlbum['modelName']
+    album['albumModelName'] = pgAlbum['albumModelName']
 
     for x in range(pgAlbum['totalPg']):
         time.sleep(0.2)

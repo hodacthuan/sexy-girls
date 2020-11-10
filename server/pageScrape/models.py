@@ -20,6 +20,7 @@ class ImageInfo(EmbeddedDocument):
 
 class ModelInfo(Document):
     objects = QuerySetManager()
+
     modelIsPublic = BooleanField(default=True)
     modelSource = StringField(required=True)
     modelName = StringField(unique=True)
@@ -48,6 +49,7 @@ class ModelInfo(Document):
 
 class Album(Document):
     objects = QuerySetManager()
+
     albumTitle = StringField(required=True)
     albumDisplayTitle = StringField(required=True)
     albumIsPublic = BooleanField(default=False)
@@ -59,8 +61,10 @@ class Album(Document):
     albumTags = ListField(StringField(max_length=2000))
     albumImages = ListField(EmbeddedDocumentField(ImageInfo))
     albumContent = ListField(StringField())
-    modelName = StringField()
-    modelId = StringField()
-    createdDate = DateTimeField(default=datetime.datetime.utcnow)
+    albumModelName = StringField()
+    albumModelId = StringField()
+    albumCreatedDate = DateTimeField(default=datetime.datetime.utcnow)
+    albumUpdatedDate = DateTimeField(default=datetime.datetime.utcnow)
+    albumSourceCreatedDate = DateTimeField(default=datetime.datetime.utcnow)
 
     meta = {'collection': 'albums', 'strict': False}
