@@ -32,7 +32,7 @@ services:
     volumes:
       - ../server:/app
     environment:
-      - DEPLOY_ENV=$DEPLOY_ENV
+      - DEPLOY_ENV=${DEPLOY_ENV:-local}
     env_file:
       - commons.env
       - secrets.env

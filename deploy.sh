@@ -71,6 +71,8 @@ case $COMMAND in
         ;;
     
     build)
+        awsConfigure
+        aws s3 cp --profile $ADMIN_AWS_PROFILE s3://sexy-girls-website/sexy-girls-secrets/ssl-config/$PROD_SERVER_HOST ${CWD}/devops/ssl-config --recursive
         docker-compose -f devops/docker-compose.yml build
         ;;
 
