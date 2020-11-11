@@ -15,9 +15,11 @@
 
     <div class="jumbotron">
         <h1>{{ album.albumDisplayTitle }}</h1>
-        <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll,
-            it will remain fixed to the top of your browser's viewport.</p>
-        <a class="btn btn-lg btn-primary" href="../../components/navbar/" role="button">View navbar docs &raquo;</a>
+        {% for tag in album.albumTags %}
+        <a class="btn  btn-secondary" href="../../tag/{{tag}}/" role="button">{{tag}} &raquo;</a>
+        <img class="img-fluid" style="margin-bottom: 10px;max-width: 900px;" src="{{imageUrl}}">
+        {% endfor %}
+
     </div>
 
     <div class="row justify-content-center">
