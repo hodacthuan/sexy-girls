@@ -52,9 +52,7 @@ def albumScrapeListofAlbum(pageUrl):
         if (albumUrl and imageUrl):
             album = {
                 'albumSourceUrl': albumUrl,
-                'albumThumbnail': {
-                    'imgSourceUrl': imageUrl
-                }
+                'albumThumbnail': [imageUrl]
             }
 
             albumLi.append(album)
@@ -65,7 +63,7 @@ def albumScrapeListofAlbum(pageUrl):
 def albumScrapeAllImageInAlbum(album):
     """Scrape all images in album and return list of image object
     Args:
-        url(str): url of album
+        album: album
 
     Returns:
         Object of image contain title and images scraped
@@ -74,10 +72,11 @@ def albumScrapeAllImageInAlbum(album):
         albumSourceUrl=album['albumSourceUrl'], albumSource=source)
 
     if not (len(albumInDB) == 0):
-        dataLogging(albumInDB[0], '')
+        # dataLogging(albumInDB[0], '')
+        logger.info('Album existing  in DB: %s' % (album['albumSourceUrl']))
         return
 
-    debug('Scrape images in url: %s' % (album['albumSourceUrl']))
+    logger.info('Scrape album in url: %s' % (album['albumSourceUrl']))
 
     html = BeautifulSoup(requests.get(
         album['albumSourceUrl'],
@@ -91,9 +90,9 @@ def albumScrapeAllImageInAlbum(album):
     album['albumTitle'] = slugify(
         album['albumDisplayTitle'], to_lower=True)
 
-    album['albumSourceCreatedDate'] = html.find(
+    album['albumUpdatedDate'] = html.find(
         class_='single_post').find(class_='thetime').find('span').contents[0]
-    print(album['albumSourceCreatedDate'])
+
     album['albumTags'] = []
     tagsHtml = html.find(
         class_='single_post').find(class_='tags').find_all('a')
@@ -107,61 +106,31 @@ def albumScrapeAllImageInAlbum(album):
 
     album['albumId'] = getLongId()
 
-    thumbnailImageUrl = album['albumThumbnail']['imgSourceUrl']
-    imgPath = 'album/' + album['albumId']
-    imgExtension = thumbnailImageUrl.split(
-        '.')[len(thumbnailImageUrl.split('.')) - 1]
-    imgFile = getShortId() + '.' + imgExtension
-    imgTempFilePath = '/tmp/' + imgPath + '/' + imgFile
-
-    uploaded = downloadAndSaveToS3(
-        thumbnailImageUrl, imgPath, imgFile)
-
-    imgOpened = Image.open(imgTempFilePath)
-
-    if uploaded:
-        imgObj = {}
-        imgObj['imgNo'] = '001'
-        imgObj['imgWidth'] = imgOpened.size[0]
-        imgObj['imgHeight'] = imgOpened.size[1]
-        imgObj['imgSize'] = os.path.getsize(imgTempFilePath)
-        imgObj['imgType'] = imghdr.what(imgTempFilePath)
-        imgObj['imgSourceUrl'] = thumbnailImageUrl
-        imgObj['imgStorePath'] = imgPath + '/' + imgFile
-        imgObj['imgExtension'] = imgExtension
-        album['albumThumbnail'] = imgObj
+    imgUrls = []
+    imgUrls.append(album['albumThumbnail'][0])
 
     album['albumImages'] = []
     imagesHtml = html.find(
         class_='post-single-content').find(class_='thecontent').find('p').find_all('a')
     for imageHtml in imagesHtml:
-        imgUrl = imageHtml.get('href')
-        if (imgUrl):
+        imgUrls.append(imageHtml.get('href'))
+
+    for index in range(len(imgUrls)):
+        if (index):
             imgPath = 'album/' + album['albumId']
-            imgExtension = imgUrl.split('.')[len(imgUrl.split('.')) - 1]
-            imgFile = getShortId() + '.' + imgExtension
-            imgTempFilePath = '/tmp/' + imgPath + '/' + imgFile
+            imgExtension = imgUrls[index].split(
+                '.')[len(imgUrls[index].split('.')) - 1]
+            imgNo = format(index, '03d')
+            imgFile = imgNo + '.' + imgExtension
 
             uploaded = downloadAndSaveToS3(
-                imgUrl, imgPath, imgFile)
-
-            imgOpened = Image.open(imgTempFilePath)
+                imgUrls[index], imgPath, imgFile)
 
             if uploaded:
-                imgObj = {}
-                imgObj['imgNo'] = format(len(album['albumImages']) + 1, '03d')
-                imgObj['imgWidth'] = imgOpened.size[0]
-                imgObj['imgHeight'] = imgOpened.size[1]
-                imgObj['imgSize'] = os.path.getsize(imgTempFilePath)
-                imgObj['imgType'] = imghdr.what(imgTempFilePath)
-                imgObj['imgSourceUrl'] = imgUrl
-                imgObj['imgStorePath'] = imgPath + '/' + imgFile
-                imgObj['imgExtension'] = imgExtension
-                album['albumImages'].append(imgObj)
-
-    deleteTempPath('album/' + album['albumId'])
-
-    print(album)
+                if imgNo == '001':
+                    album['albumThumbnail'] = ['001']
+                else:
+                    album['albumImages'].append(imgNo)
 
     try:
         Album(**album).save()
@@ -171,26 +140,24 @@ def albumScrapeAllImageInAlbum(album):
         debug('Delete album ' + album['albumId'])
         deleteAwsS3Dir('album/' + album['albumId'])
 
+    logger.info(album)
+    deleteTempPath('album/' + album['albumId'])
+
 
 def scrapeEachPage():
     pageUrl = originUrl + '/page/1'
     albumObjLi = albumScrapeListofAlbum(pageUrl)
-    print(albumObjLi)
-    for album in albumObjLi:
-        if (album['albumSourceUrl'] != 'https://hotgirl.biz/huayang-vol-279-yue-er-yue/'):
-            continue
 
+    for album in albumObjLi:
         albumScrapeAllImageInAlbum(album)
 
 
 def main():
-    logging.info('Start to scrape: %s' % (source))
+    logger.info('Start to scrape: %s' % (source))
     album = {
         'albumSourceUrl': 'https://hotgirl.biz/youmei-vol-414-baby-sitters-honey/',
-        'albumThumbnail': {
-            'imgSourceUrl': 'https://hotgirl.biz/wp-content/uploads/2020/11/0-09142032.jpg'
-        }
+        'albumThumbnail': ['https://hotgirl.biz/wp-content/uploads/2020/11/0-09142032.jpg']
     }
-    # albumScrapeAllImageInAlbum(album)
+    albumScrapeAllImageInAlbum(album)
 
     scrapeEachPage()

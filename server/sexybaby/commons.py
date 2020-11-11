@@ -59,14 +59,21 @@ def downloadAndSaveToS3(url, filePath, fileName):
 
 
 def copyAlbumFromS3ToServer(album):
-    storePath = constants.IMAGE_STORAGE + '/' + album['albumTitle']
+    storePath = constants.IMAGE_STORAGE + album['albumTitle']
     if not(path.isdir(storePath)):
         os.makedirs(storePath)
 
-        for image in album['albumImages']:
+        for imageNo in album['albumImages']:
+            copyFromS3('album/' + album['albumId'] + '/' + imageNo + '.jpg',
+                       storePath + '/' + album['albumTitle'] + '-' + imageNo + '.jpg')
 
-            copyFromS3(image['imgStorePath'],
-                       storePath + '/' + album['albumTitle'] + '-' + image['imgNo']+'.jpg')
+    storePathThumbnail = constants.THUMBNAIL_STORAGE + album['albumTitle']
+    if not(path.isdir(storePathThumbnail)):
+        os.makedirs(storePathThumbnail)
+
+        for imageNo in album['albumThumbnail']:
+            copyFromS3('album/' + album['albumId'] + '/' + imageNo + '.jpg',
+                       storePath + '/' + album['albumTitle'] + '-' + imageNo + '.jpg')
 
 
 def deleteTempPath(filePath):

@@ -42,16 +42,17 @@ def images(request, imagePath, imageFileName):
 
 def albums(request, albumTitle):
     album = Album.objects(albumTitle=albumTitle)[0]
-    commons.copyAlbumFromS3ToServer(album)
-    album.albumThumbnail.url = constants.BUCKET_PUBLIC_URL + \
-        album.albumThumbnail.imgStorePath
 
-    for index in range(len(album.albumImages)):
-        album.albumImages[index].url = '/image/' + \
+    commons.copyAlbumFromS3ToServer(album)
+
+    album.albumImageUrls = []
+    for imgNo in album.albumImages:
+
+        imageUrl = '/image/' + \
             album.albumTitle + '/' + \
             album.albumTitle + '-' + \
-            album.albumImages[index].imgNo + '.' + \
-            album.albumImages[index].imgExtension
+            imgNo + '.jpg'
+        album.albumImageUrls.append(imageUrl)
 
     context = {
         'album': album
