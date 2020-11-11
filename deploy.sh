@@ -8,8 +8,22 @@ source devops/commons.env
 source devops/secrets.env
 
 function ec2SSH() {
-    chmod 400 $EC2_KEYPAIR
-    ssh -i $EC2_KEYPAIR $EC2_HOST
+    export SERVER_NAME=${2}
+
+    case $SERVER_NAME in
+
+        server)
+            chmod 400 $EC2_KEYPAIR
+            ssh -i $EC2_KEYPAIR $EC2_HOST
+            ;;
+
+        scrape)
+            chmod 400 $SCRAPE_KEYPAIR
+            ssh -i $SCRAPE_KEYPAIR $SCRAPE_HOST
+            ;;
+    esac
+
+
 }
 
 function awsConfigure() {
@@ -58,11 +72,11 @@ case $COMMAND in
         docker exec -w /scripts -i ${SERVICE_NAME}-mongodb sh -c "bash db-scripts.sh exportAndUpload"
         ;;
 
-    ec2-login)
-        ec2SSH
+    login)
+        ec2SSH $@
         ;;
 
-    ec2-deploy)
+    deploy)
         ec2Deploy
         ;;
 
