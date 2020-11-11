@@ -47,7 +47,7 @@ services:
           - server
 
   scrape:
-    restart: always
+    # restart: on-failure
     stdin_open: true
     image: sg-server-image:1.0
     build:

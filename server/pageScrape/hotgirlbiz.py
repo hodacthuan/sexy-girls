@@ -34,6 +34,7 @@ def albumScrapeListofAlbum(pageUrl):
     Returns:
         List of album obj
     """
+    logger.info('Scrape album list in url: %s' % (pageUrl))
 
     html = BeautifulSoup(requests.get(
         pageUrl,
@@ -76,7 +77,7 @@ def albumScrapeAllImageInAlbum(album):
         logger.info('Album existing  in DB: %s' % (album['albumSourceUrl']))
         return
 
-    logger.info('Scrape album in url: %s' % (album['albumSourceUrl']))
+    logger.info('Scrape images in album: %s' % (album['albumSourceUrl']))
 
     html = BeautifulSoup(requests.get(
         album['albumSourceUrl'],
@@ -145,11 +146,13 @@ def albumScrapeAllImageInAlbum(album):
 
 
 def scrapeEachPage():
-    pageUrl = originUrl + '/page/1'
-    albumObjLi = albumScrapeListofAlbum(pageUrl)
+    for index in range(200):
 
-    for album in albumObjLi:
-        albumScrapeAllImageInAlbum(album)
+        pageUrl = originUrl + '/page/' + str(index)
+        albumObjLi = albumScrapeListofAlbum(pageUrl)
+
+        for album in albumObjLi:
+            albumScrapeAllImageInAlbum(album)
 
 
 def main():
@@ -158,6 +161,6 @@ def main():
         'albumSourceUrl': 'https://hotgirl.biz/youmei-vol-414-baby-sitters-honey/',
         'albumThumbnail': ['https://hotgirl.biz/wp-content/uploads/2020/11/0-09142032.jpg']
     }
-    albumScrapeAllImageInAlbum(album)
+    # albumScrapeAllImageInAlbum(album)
 
     scrapeEachPage()
