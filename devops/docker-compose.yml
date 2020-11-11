@@ -46,6 +46,30 @@ services:
         aliases:
           - server
 
+  scrape:
+    restart: always
+    stdin_open: true
+    image: sg-server-image:1.0
+    build:
+      context: ..
+      dockerfile: devops/Dockerfile-server
+    container_name: sg-scrape
+    command: python3 /app/manage.py scrape hotgirlbiz
+    volumes:
+      - ../server:/app
+    environment:
+      - DEPLOY_ENV=${DEPLOY_ENV:-local}
+    env_file:
+      - commons.env
+      - secrets.env
+    logging:
+      options:
+        max-size: 10m
+
+    networks:
+      network:
+        aliases:
+          - scrape
 networks:
   network:
     name: sexy-girls-network

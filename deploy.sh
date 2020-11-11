@@ -43,7 +43,7 @@ function upService() {
     # INPUT VARIABLE
     export DEPLOY_ENV=${2}
 
-    ENVS=(local prod)
+    ENVS=(local prod scrape)
     [[ ! " ${ENVS[@]} " =~ " ${DEPLOY_ENV} " ]] && echo "PLEASE USE ENV: ${ENVS[@]}" && exit 0
 
     docker-compose -f devops/docker-compose.yml down
@@ -53,11 +53,14 @@ function upService() {
 
     case "${DEPLOY_ENV}" in
     local)
-        
-        docker-compose -f devops/docker-compose.yml up -d
+        docker-compose -f devops/docker-compose.yml up -d nginx server
         ;;
     prod)
-        docker-compose -f devops/docker-compose.yml up -d
+        docker-compose -f devops/docker-compose.yml up -d nginx server
+        ;;
+
+    scrape)
+        docker-compose -f devops/docker-compose.yml up -d scrape
         ;;
     esac
 

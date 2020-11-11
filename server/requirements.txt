@@ -1,6 +1,7 @@
 six==1.15.0
 bs4==0.0.1
 redis==3.5.3
+image==1.5.33
 boto3==1.16.9
 daphne==3.0.0
 django==3.0.5
