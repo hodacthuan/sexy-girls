@@ -6,14 +6,26 @@ git clone https://github.com/hodacthuan/linux-tools.git
 linux-tools/cli-tools/awscli.sh
 linux-tools/docker/index.sh
 ```
-### Up database MongoDB
+### Deploy MongoDB
 
 ```
 git clone https://github.com/hodacthuan/devops-infrastructure.git
 cd devops-infrastructure/mongodb
+
 nano sexy-girls.env
 ./up.sh sexy-girls
 ```
+
+### Deploy RedisDB
+
+```
+git clone https://github.com/hodacthuan/devops-infrastructure.git
+cd devops-infrastructure/redisdb
+
+nano sexy-girls.env
+./up.sh sexy-girls
+```
+
 ### Source code clone
 ```
 ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
