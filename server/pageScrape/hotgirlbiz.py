@@ -89,6 +89,8 @@ def albumScrapeAllImageInAlbum(album):
 
     logger.info('Scrape images in album: %s' % (album['albumSourceUrl']))
 
+    album['albumId'] = getLongId()
+
     try:
         html = BeautifulSoup(requests.get(
             album['albumSourceUrl'],
@@ -117,8 +119,6 @@ def albumScrapeAllImageInAlbum(album):
         categories = categoriesText.split(',')
         for category in categories:
             album['albumCategories'].append(commons.getCategoryTitle(category))
-
-        album['albumId'] = getLongId()
 
         imgUrls = []
         imgUrls.append(album['albumThumbnail'][0])
