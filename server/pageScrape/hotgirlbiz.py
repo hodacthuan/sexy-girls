@@ -166,7 +166,7 @@ def deleteAllImageSizeIsZeroInDBAndS3():
             if fileSize == 0:
                 # Delete in S3
                 logger.info('Delete object: %s' % (imageS3Path))
-                deleted =  aws.deleteAwsS3Dir(imageS3Path)
+                deleted =  aws.deleteAwsS3Object(imageS3Path)
 
                 if deleted:
                     logger.info('Delete successfully: %s' % (imageS3Path))
@@ -178,6 +178,18 @@ def deleteAllImageSizeIsZeroInDBAndS3():
                 Album.objects(albumSource=source,albumId=album['albumId']).update_one(set__albumImages=newAlbumImages)
                 albumUpdated = Album.objects(albumSource=source,albumId=album['albumId'])
                 logger.info('Album images updated: %s' % (albumUpdated[0]['albumImages']))
+
+
+def deleteAlbumExistOnS3ButNotInDB():
+    s3List = aws.listSubfolderInFolder('album/')
+
+    for albumS3Path in s3List:
+        albumId = albumS3Path.split('/')[1]
+        albumInDB = Album.objects(albumId=albumId)
+        if (len(albumInDB) == 0):
+            logger.info('Delete album ID: %s' % (albumId))
+            aws.deleteAwsS3Dir(albumS3Path)
+
 
             
 def main():
@@ -194,6 +206,7 @@ def main():
 
     if constants.DEPLOY_ENV == 'local':
         # deleteAllImageSizeIsZeroInDBAndS3()
+        # deleteAlbumExistOnS3ButNotInDB()    
 
         album = {
             'albumSourceUrl': 'https://hotgirl.biz/xiuren-vol-2525-jiu-shi-a-zhu/',

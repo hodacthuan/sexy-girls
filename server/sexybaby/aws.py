@@ -20,6 +20,21 @@ s3 = boto3.client('s3', aws_access_key_id=constants.AWS_ACCESS_KEY,
 
 def deleteAwsS3Dir(s3FilePath):
     try:
+        objectKeys = listAllObjectsInFolder(s3FilePath)
+
+        for objectKey in objectKeys:
+            deleteAwsS3Object(objectKey)
+
+        return True
+    except FileNotFoundError:
+        print("The file was not found")
+        return False
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
+
+def deleteAwsS3Object(s3FilePath):
+    try:
         s3.delete_object(
             Bucket=constants.AWS_BUCKET,
             Key=s3FilePath
@@ -61,6 +76,49 @@ def getObjectSize( s3FilePath):
     except NoCredentialsError:
         print("Credentials not available")
         return False
+
+def listAllObjectsInFolder(prefix):
+    """Get a list of all keys in an S3 bucket."""
+    keys = []
+    kwargs = {
+        'Bucket': constants.AWS_BUCKET,
+        'Prefix': prefix
+    }
+
+    while True:
+        resp = s3.list_objects_v2(**kwargs)
+        
+        for obj in resp['Contents']:
+            keys.append(obj['Key'])
+
+        try:
+            kwargs['ContinuationToken'] = resp['NextContinuationToken']
+        except KeyError:
+            break
+
+    return keys
+
+def listSubfolderInFolder(prefix):
+    """Get a list of all keys in an S3 bucket."""
+    keys = []
+    kwargs = {
+        'Bucket': constants.AWS_BUCKET,
+        'Prefix': prefix,
+        'Delimiter':'/'
+    }
+
+    while True:
+        resp = s3.list_objects_v2(**kwargs)
+        
+        for obj in resp.get('CommonPrefixes'):
+            keys.append(obj.get('Prefix'))
+            
+        try:
+            kwargs['ContinuationToken'] = resp['NextContinuationToken']
+        except KeyError:
+            break
+
+    return keys
 
 
 def copyFromS3(s3FilePath, filePath):
