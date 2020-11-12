@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup, Tag, NavigableString
 from pageScrape.models import Album, ModelInfo
 import requests
 import logging
-from sexybaby import commons
+from sexybaby import commons, aws
 import mongoengine
 from sexybaby import constants
 import pageScrape
@@ -156,7 +156,30 @@ def albumScrapeAllImageInAlbum(album):
     logger.info(album)
     deleteTempPath('album/' + album['albumId'])
 
+def deleteAllImageSizeIsZeroInDBAndS3():
+    albumInDB = Album.objects(albumSource=source)
+    for album in albumInDB:
+        for imageIndex in album['albumImages']:
+            imageS3Path = 'album/' + album['albumId'] + '/' + imageIndex + '.jpg'
+            fileSize = aws.getObjectSize(imageS3Path)
+            
+            if fileSize == 0:
+                # Delete in S3
+                logger.info('Delete object: %s' % (imageS3Path))
+                deleted =  aws.deleteAwsS3Dir(imageS3Path)
 
+                if deleted:
+                    logger.info('Delete successfully: %s' % (imageS3Path))
+
+                # Delete in MongoDb
+                newAlbumImages = album['albumImages']
+                newAlbumImages.remove(imageIndex)
+                logger.info('New album images array: %s' % (newAlbumImages))
+                Album.objects(albumSource=source,albumId=album['albumId']).update_one(set__albumImages=newAlbumImages)
+                albumUpdated = Album.objects(albumSource=source,albumId=album['albumId'])
+                logger.info('Album images updated: %s' % (albumUpdated[0]['albumImages']))
+
+            
 def main():
     logger.info('Start to scrape: %s' % (source))
 
@@ -170,6 +193,8 @@ def main():
                 albumScrapeAllImageInAlbum(album)
 
     if constants.DEPLOY_ENV == 'local':
+        # deleteAllImageSizeIsZeroInDBAndS3()
+
         album = {
             'albumSourceUrl': 'https://hotgirl.biz/xiuren-vol-2525-jiu-shi-a-zhu/',
             'albumThumbnail': ['https://cdn.besthotgirl.com/assets/uploads/224416.jpg']
