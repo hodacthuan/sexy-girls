@@ -114,3 +114,6 @@ Pages can be scrape
 - [How To Scrape Web Pages with Beautiful Soup and Python 3](https://www.digitalocean.com/community/tutorials/how-to-scrape-web-pages-with-beautiful-soup-and-python-3)
 - [Free Bootstrap Templates](https://startbootstrap.com/templates)
 - [How to use Django with Apache and mod_wsgi](https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/modwsgi/)
+
+Boto
+- [Boto S3 Documents](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html)

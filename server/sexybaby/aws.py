@@ -47,6 +47,21 @@ def uploadToAws(filePath, s3FilePath):
         print("Credentials not available")
         return False
 
+def getObjectSize( s3FilePath):
+   
+    try:
+        response = s3.head_object(
+            Bucket=constants.AWS_BUCKET,
+            Key=s3FilePath)
+        size = response['ContentLength']
+        return size
+    except FileNotFoundError:
+        print("The file was not found", filePath)
+        return False
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
+
 
 def copyFromS3(s3FilePath, filePath):
 
