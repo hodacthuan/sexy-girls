@@ -8,6 +8,7 @@ import pageScrape
 from sexybaby.commons import dataLogging
 from sexybaby import constants
 import logging
+import math
 from sexybaby import commons
 logger = logging.getLogger(__name__)
 
@@ -40,19 +41,45 @@ def images(request, imagePath, imageFileName):
     return serve(request, imageFileName, document_root=constants.IMAGE_STORAGE+imagePath)
 
 
-def albums(request, albumTitle):
+def albums(request, albumTitle, albumPage):
     album = Album.objects(albumTitle=albumTitle)[0]
 
     commons.copyAlbumFromS3ToServer(album)
 
     album.albumImageUrls = []
-    for imgNo in album.albumImages:
 
+    pagiNumber = int(albumPage)
+    pagiInterval = constants.ALBUM_PAGINATION_NUMBER_OF_IMAGE
+    pagiStop = pagiNumber * constants.ALBUM_PAGINATION_NUMBER_OF_IMAGE
+
+    for imgIndex in range(len(album.albumImages)):
         imageUrl = '/image/' + \
             album.albumTitle + '/' + \
             album.albumTitle + '-' + \
-            imgNo + '.jpg'
-        album.albumImageUrls.append(imageUrl)
+            album.albumImages[imgIndex] + '.jpg'
+        if imgIndex >= (pagiStop-pagiInterval) and imgIndex < (pagiStop):
+            album.albumImageUrls.append(imageUrl)
+
+    pagiMax = math.ceil(len(album.albumImages)/pagiInterval)
+    album.pagiObjs = []
+    album.pagiObjs.append({
+        'pagiUrl': '/album/' + album.albumTitle + '/' + str(pagiNumber-1),
+        'pagiNo': 'Previous',
+        'pagiStatus': 'disabled' if (1 == pagiNumber) else ''
+    })
+    for pagiNo in range(pagiMax):
+        pagiObj = {
+            'pagiUrl': '/album/' + album.albumTitle + '/' + str(pagiNo+1),
+            'pagiNo': str(pagiNo+1),
+            'pagiStatus': 'active' if (pagiNo+1 == pagiNumber) else ''
+        }
+
+        album.pagiObjs.append(pagiObj)
+    album.pagiObjs.append({
+        'pagiUrl': '/album/' + album.albumTitle + '/' + str(pagiNumber+1),
+        'pagiNo': 'Next',
+        'pagiStatus': 'disabled' if (pagiMax == pagiNumber) else ''
+    })
 
     context = {
         'album': album

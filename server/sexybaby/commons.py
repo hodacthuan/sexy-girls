@@ -67,7 +67,7 @@ def copyAlbumFromS3ToServer(album):
         os.makedirs(storePath)
 
         for imageNo in album['albumImages']:
-            copyFromS3('album/' + album['albumId'] + '/' + imageNo + '.jpg',
+            copyFromS3(album['albumStorePath'] + '/' + imageNo + '.jpg',
                        storePath + '/' + album['albumTitle'] + '-' + imageNo + '.jpg')
 
     storePathThumbnail = constants.THUMBNAIL_STORAGE + album['albumTitle']
@@ -75,7 +75,7 @@ def copyAlbumFromS3ToServer(album):
         os.makedirs(storePathThumbnail)
 
         for imageNo in album['albumThumbnail']:
-            copyFromS3('album/' + album['albumId'] + '/' + imageNo + '.jpg',
+            copyFromS3(album['albumStorePath'] + '/' + imageNo + '.jpg',
                        storePath + '/' + album['albumTitle'] + '-' + imageNo + '.jpg')
 
 

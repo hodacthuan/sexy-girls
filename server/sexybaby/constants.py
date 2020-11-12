@@ -15,6 +15,7 @@ THUMBNAIL_STORAGE = os.path.join(os.path.dirname(
 
 USER_AGENT_HEADER = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36'
 
+ALBUM_PAGINATION_NUMBER_OF_IMAGE = 10
 DEPLOY_ENV = 'local'
 if os.environ.get('DEPLOY_ENV') is not None:
     DEPLOY_ENV = os.environ['DEPLOY_ENV']

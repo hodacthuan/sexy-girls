@@ -12,4 +12,4 @@ urlpatterns = [
     path('about', views.about),
     path('hello', views.hello),
     path('image/<str:imagePath>/<str:imageFileName>', views.images),
-    path('album/<str:albumTitle>', views.albums), ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('album/<str:albumTitle>/<str:albumPage>/', views.albums), ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
