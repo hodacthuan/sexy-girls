@@ -39,23 +39,24 @@ def dataLogging(obj, prefix=''):
 def downloadAndSaveToS3(url, filePath, fileName):
 
     tempPath = '/tmp/' + filePath
-    tempFile = '/tmp/' + filePath + '/' + fileName
+    tempFile = tempPath + '/' + fileName
 
     if not(path.isdir(tempPath)):
         os.makedirs(tempPath)
     try:
-
         opener = urllib.request.URLopener()
         opener.addheader(
-            'User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36')
+            'User-Agent', constants.USER_AGENT_HEADER)
         opener.retrieve(url, tempFile)
-        # urllib.request.urlretrieve(url, tempFile)
 
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e))
 
-    return uploadToAws(
-        tempFile, filePath + '/' + fileName)
+    if os.path.getsize(tempFile) > 0:
+        return uploadToAws(
+            tempFile, filePath + '/' + fileName)
+    else:
+        return False
 
 
 def copyAlbumFromS3ToServer(album):

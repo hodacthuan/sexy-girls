@@ -158,8 +158,8 @@ def scrapeEachPage():
 def main():
     logger.info('Start to scrape: %s' % (source))
     album = {
-        'albumSourceUrl': 'https://hotgirl.biz/youmei-vol-414-baby-sitters-honey/',
-        'albumThumbnail': ['https://hotgirl.biz/wp-content/uploads/2020/11/0-09142032.jpg']
+        'albumSourceUrl': 'https://hotgirl.biz/xiuren-vol-2525-jiu-shi-a-zhu/',
+        'albumThumbnail': ['https://cdn.besthotgirl.com/assets/uploads/224416.jpg']
     }
     # albumScrapeAllImageInAlbum(album)
 
