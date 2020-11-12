@@ -7,10 +7,12 @@ import boto3
 import uuid
 import time
 import shutil
+from slugify import slugify
 import os.path
 from os import path
 import coloredlogs
 import os
+from pageScrape.models import Album, ModelInfo, Tag, Category
 from botocore.exceptions import NoCredentialsError
 import urllib.request
 from .aws import copyFromS3
@@ -91,6 +93,34 @@ def getLongId():
 
 def getShortId():
     return str(uuid.uuid4()).split('-')[0]
+
+
+def getTagTitle(tagDisplayTitle):
+    tagTitle = slugify(tagDisplayTitle.strip(), to_lower=True)
+    tagInDB = Tag.objects(tagTitle=tagTitle)
+    if (len(tagInDB) == 0):
+
+        tag = {
+            'tagTitle': tagTitle,
+            'tagDisplayTitle': tagDisplayTitle.strip()
+        }
+        Tag(**tag).save()
+
+    return tagTitle
+
+
+def getCategoryTitle(categoryDisplayTitle):
+    categoryTitle = slugify(categoryDisplayTitle.strip(), to_lower=True)
+    categoryInDB = Category.objects(categoryTitle=categoryTitle)
+    if (len(categoryInDB) == 0):
+
+        category = {
+            'categoryTitle': categoryTitle,
+            'categoryDisplayTitle': categoryDisplayTitle.strip()
+        }
+        Category(**category).save()
+
+    return categoryTitle
 
 
 def debug(value):

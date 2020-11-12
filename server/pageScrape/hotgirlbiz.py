@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup, Tag, NavigableString
 from pageScrape.models import Album, ModelInfo
 import requests
 import logging
+from sexybaby import commons
 import mongoengine
 from sexybaby import constants
 import pageScrape
@@ -108,12 +109,14 @@ def albumScrapeAllImageInAlbum(album):
         tagsHtml = html.find(
             class_='single_post').find(class_='tags').find_all('a')
         for tagHtml in tagsHtml:
-            album['albumTags'].append(tagHtml.contents[0])
+            album['albumTags'].append(commons.getTagTitle(tagHtml.contents[0]))
 
         album['albumCategories'] = []
         categoriesText = html.find(
             class_='single_post').find(class_='thecategory').contents[0]
-        album['albumCategories'] = (categoriesText.split(','))
+        categories = categoriesText.split(',')
+        for category in categories:
+            album['albumCategories'].append(commons.getCategoryTitle(category))
 
         album['albumId'] = getLongId()
 

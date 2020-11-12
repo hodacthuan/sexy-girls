@@ -47,6 +47,30 @@ class ModelInfo(Document):
     meta = {'collection': 'models', 'strict': False}
 
 
+class Tag(Document):
+    objects = QuerySetManager()
+
+    tagTitle = StringField(required=True)
+    tagDisplayTitle = StringField(required=True)
+    tagIsPublic = BooleanField(default=True)
+    tagThumbnail = ListField(StringField())
+    tagType = StringField()
+
+    meta = {'collection': 'tags', 'strict': False}
+
+
+class Category(Document):
+    objects = QuerySetManager()
+
+    categoryTitle = StringField(required=True)
+    categoryDisplayTitle = StringField(required=True)
+    categoryIsPublic = BooleanField(default=True)
+    categoryThumbnail = ListField(StringField())
+    categoryType = StringField()
+
+    meta = {'collection': 'categories', 'strict': False}
+
+
 class Album(Document):
     objects = QuerySetManager()
 
