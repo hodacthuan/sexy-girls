@@ -1,4 +1,11 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environments
+envPath = os.path.dirname(__file__)+'/../.'+'./devops'
+envFile = Path(envPath) / 'secrets.env'
+load_dotenv(dotenv_path=envFile)
 
 MONGODB_URL = os.environ['MONGODB_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
@@ -7,6 +14,10 @@ AWS_ACCESS_KEY = os.environ['ADMIN_ACCESS_KEY_ID']
 AWS_SECRET_KEY = os.environ['ADMIN_SECRET_ACCESS_KEY']
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
+REDISDB_URL = os.environ['REDISDB_URL']
+REDISDB_PASSWORD = os.environ['REDISDB_PASSWORD']
+REDISDB_SERVER = os.environ['REDISDB_SERVER']
+REDISDB_PORT = os.environ['REDISDB_PORT']
 
 IMAGE_STORAGE = os.path.join(os.path.dirname(
     __file__), '../tempStorages/images/')

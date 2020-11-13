@@ -10,17 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 '''
 
-from dotenv import load_dotenv
-from pathlib import Path  # Python 3.6+ only
+from sexybaby import constants
+from pathlib import Path
 import os
 import mongoengine
 import logging
 logger = logging.getLogger(__name__)
-
-# Load env
-envPath = os.path.dirname(__file__)+'/../.'+'./devops'
-envFile = Path(envPath) / 'secrets.env'
-load_dotenv(dotenv_path=envFile)
 
 # Connect to MongoDB
 mongoengine.connect(
@@ -40,10 +35,11 @@ SECRET_KEY = '4(@ih=e%$=7jefxi^(m@(rg_q65z^s1b)qbwr^b83qtxq2&70-'
 DEBUG = True
 
 if os.environ.get('DEPLOY_ENV') is not None:
+
     if os.environ['DEPLOY_ENV'] == 'prod':
         DEBUG = False
 
-ALLOWED_HOSTS = ['.localhost' ]
+ALLOWED_HOSTS = ['.localhost']
 
 if os.environ.get('PROD_SERVER_HOST') is not None:
     ALLOWED_HOSTS.append(os.environ['PROD_SERVER_HOST'])
@@ -92,7 +88,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sexybaby.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -100,6 +95,16 @@ DATABASES = {
     }
 }
 
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": constants.REDISDB_URL,
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "PASSWORD": constants.REDISDB_PASSWORD,
+#         }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
