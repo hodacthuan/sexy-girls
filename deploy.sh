@@ -11,19 +11,15 @@ function ec2SSH() {
     export SERVER_NAME=${2}
 
     case $SERVER_NAME in
-
         server)
             chmod 400 $EC2_KEYPAIR
             ssh -i $EC2_KEYPAIR $EC2_HOST
             ;;
-
         scrape)
             chmod 400 $SCRAPE_KEYPAIR
             ssh -i $SCRAPE_KEYPAIR $SCRAPE_HOST
             ;;
     esac
-
-
 }
 
 function awsConfigure() {
@@ -34,13 +30,12 @@ function awsConfigure() {
 
 function privateDockerLogin() {
     awsConfigure
-    # private docker login
+
     echo $(aws ecr get-login --profile ${ADMIN_AWS_PROFILE} | cut -d' ' -f6) | docker login -u AWS --password-stdin https://${PRIVATE_DOCKER_REGISTRY}
 }
 
 
 function upService() {
-    # INPUT VARIABLE
     export DEPLOY_ENV=${2}
 
     ENVS=(local prod scrape)
@@ -103,7 +98,7 @@ case $COMMAND in
         ;;
 
     exec)
-        docker-compose -f devops/docker-compose.yml exec ${2} sh
+        docker-compose -f devops/docker-compose.yml exec ${2} bash
         [ $? -ne 0 ] && echo -e "\nPLEASE USE:\n"$(docker-compose -f devops/docker-compose.yml ps --services) "\n" && exit 0
         ;;
 
@@ -114,6 +109,10 @@ case $COMMAND in
 
     run)
         python3 server/manage.py
+        ;;
+    
+    redissh)
+        redis-cli -h $REDISDB_SERVER -p $REDISDB_PORT -a $REDISDB_PASSWORD
         ;;
 
 esac
