@@ -125,8 +125,7 @@ def getCategoryTitle(categoryDisplayTitle):
 
 def debug(value):
     try:
-        environment = os.environ['ENVIRONMENT']
-        if environment == 'development':
-            logging.info(value)
+        if constants.DEPLOY_ENV == 'local':
+            logging.debug(value)
     except:
         logging.info('Failed to debug')

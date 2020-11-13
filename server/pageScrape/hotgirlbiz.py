@@ -153,10 +153,11 @@ def albumScrapeAllImageInAlbum(album):
         logger.error('Cannot save to DB:' + album['albumSourceUrl'])
 
         if 'albumStorePath' in album:
-            commons.debug('Delete album ' + album['albumStorePath'])
-            aws.deleteAwsS3Dir(album['albumStorePath'])
+            deleted = aws.deleteAwsS3Dir(album['albumStorePath'])
+            if deleted:
+                logger.info('Deleted album ' + album['albumStorePath'])
 
-    print(album)
+    commons.debug(album)
     if 'albumStorePath' in album:
         commons.deleteTempPath(album['albumStorePath'])
 
