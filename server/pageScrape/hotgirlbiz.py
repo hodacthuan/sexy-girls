@@ -31,7 +31,7 @@ def albumScrapeListofAlbum(pageUrl):
     Returns:
         List of album obj
     """
-    logger.info('Scrape album list in url: %s' % (pageUrl))
+    logger.info('SCRAPE ALBUM LIST IN PAGE: %s' % (pageUrl))
 
     html = BeautifulSoup(requests.get(
         pageUrl,
