@@ -132,22 +132,28 @@ def albumScrapeAllImageInAlbum(album):
 
         for index in range(len(imgUrls)):
             if (index):
-                imgPath = album['albumStorePath']
-                imgExtension = imgUrls[index].split(
-                    '.')[len(imgUrls[index].split('.')) - 1]
-                imgNo = format(index, '03d')
-                imgFile = imgNo + '.' + imgExtension
+                try:
+                    imgPath = album['albumStorePath']
+                    imgExtension = imgUrls[index].split(
+                        '.')[len(imgUrls[index].split('.')) - 1]
+                    imgNo = format(index, '03d')
+                    imgFile = imgNo + '.' + imgExtension
 
-                uploaded = commons.downloadAndSaveToS3(
-                    imgUrls[index], imgPath, imgFile)
+                    uploaded = commons.downloadAndSaveToS3(
+                        imgUrls[index], imgPath, imgFile)
 
-                if uploaded:
-                    if imgNo == '001':
-                        album['albumThumbnail'] = ['001']
-                    else:
-                        album['albumImages'].append(imgNo)
+                    if uploaded:
+                        if imgNo == '001':
+                            album['albumThumbnail'] = ['001']
+                        else:
+                            album['albumImages'].append(imgNo)
+                except:
+                    pass
 
-        Album(**album).save()
+        if len(album['albumImages']) > 5:
+            Album(**album).save()
+        else:
+            raise Exception('Empty images, delete album s3 storage')
 
     except:
         logger.error('Cannot save to DB:' + album['albumSourceUrl'])
@@ -174,12 +180,11 @@ def devScrapePage():
     albumDeleteds = Album.objects(albumSourceUrl=albumUrl)
     if len(albumDeleteds) > 0:
         albumDeleted = albumDeleteds[0]
-        oldStorePath = albumDeleted['albumStorePath']
-        deleted = aws.deleteAwsS3Dir(oldStorePath)
+        deleted = aws.deleteAwsS3Dir(albumDeleted['albumStorePath'])
         if deleted:
-            Album.objects(albumSourceUrl=albumUrl).delete()
             logger.info('Delete album : %s' %
                         (albumDeleted['albumStorePath']))
+            Album.objects(albumSourceUrl=albumUrl).delete()
 
     else:
         albumScrapeAllImageInAlbum(newAlbum)
