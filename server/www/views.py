@@ -14,7 +14,23 @@ logger = logging.getLogger(__name__)
 
 
 def home(request):
-    return render(request, "home.html")
+    albumList = Album.objects[:16].order_by('-albumUpdatedDate')
+    data = {}
+    data['albums'] = []
+    for album in albumList:
+        commons.copyAlbumThumbnailFromS3ToServer(album)
+
+        albumData = {}
+        albumData['albumUrl'] = '/album/' + album['albumTitle'] + '/01/'
+        albumData['albumDisplayTitle'] = album['albumDisplayTitle']
+        albumData['albumThumbnailUrl'] = '/thumbnail/' + \
+            album.albumTitle + '/' + \
+            album.albumTitle + '-' + \
+            album.albumThumbnail[0] + '.jpg'
+
+        data['albums'].append(albumData)
+
+    return render(request, 'home.html', {'data': data})
 
 
 def trending(request):
@@ -41,10 +57,14 @@ def images(request, imagePath, imageFileName):
     return serve(request, imageFileName, document_root=constants.IMAGE_STORAGE+imagePath)
 
 
+def thumbnails(request, imagePath, imageFileName):
+    return serve(request, imageFileName, document_root=constants.THUMBNAIL_STORAGE+imagePath)
+
+
 def albums(request, albumTitle, albumPage):
     album = Album.objects(albumTitle=albumTitle)[0]
 
-    commons.copyAlbumFromS3ToServer(album)
+    commons.copyAlbumImagesFromS3ToServer(album)
 
     album.albumImageUrls = []
 
