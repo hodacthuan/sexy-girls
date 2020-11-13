@@ -142,6 +142,8 @@ def albumScrapeAllImageInAlbum(album):
                     uploaded = commons.downloadAndSaveToS3(
                         imgUrls[index], imgPath, imgFile)
 
+                    commons.debug(imgUrls[index])
+
                     if uploaded:
                         if imgNo == '001':
                             album['albumThumbnail'] = ['001']
@@ -152,7 +154,9 @@ def albumScrapeAllImageInAlbum(album):
 
         if len(album['albumImages']) > 5:
             Album(**album).save()
+            commons.debug(album)
         else:
+            logger.error('Empty images, delete album s3 storage')
             raise Exception('Empty images, delete album s3 storage')
 
     except:
@@ -161,11 +165,11 @@ def albumScrapeAllImageInAlbum(album):
         if 'albumStorePath' in album:
             deleted = aws.deleteAwsS3Dir(album['albumStorePath'])
             if deleted:
-                logger.info('Deleted album ' + album['albumStorePath'])
+                logger.info('Deleted album S3 ' + album['albumStorePath'])
 
-    commons.debug(album)
     if 'albumStorePath' in album:
         commons.deleteTempPath(album['albumStorePath'])
+        logger.info('Deleted album dir ' + album['albumStorePath'])
 
 
 def devScrapePage():
@@ -182,7 +186,7 @@ def devScrapePage():
         albumDeleted = albumDeleteds[0]
         deleted = aws.deleteAwsS3Dir(albumDeleted['albumStorePath'])
         if deleted:
-            logger.info('Delete album : %s' %
+            logger.info('Delete album S3 %s' %
                         (albumDeleted['albumStorePath']))
             Album.objects(albumSourceUrl=albumUrl).delete()
 
