@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from pageScrape.models import Album
 import pageScrape
+import random
 from os import path
 from sexybaby import imageUtils
 from sexybaby.commons import dataLogging
@@ -32,16 +33,23 @@ def home(request):
             album.albumThumbnail[0] + '.jpg'
 
         data['albums'].append(albumData)
-
+    existingAlbums = []
+    for album in albumList:
         albumPath = constants.IMAGE_STORAGE + album['albumTitle']
-        if (len(data['slide']) < 5) and path.isdir(albumPath):
-            slideData = {}
+        if path.isdir(albumPath):
+            existingAlbums.append(album)
+
+    # random.shuffle(existingAlbums)
+
+    for album in existingAlbums:
+        albumPath = constants.IMAGE_STORAGE + album['albumTitle']
+        if (len(data['slide']) < 5):
 
             slideVerticalImages = []
             slideHorizontalImages = []
 
             imgIndex = 0
-            while ((len(slideHorizontalImages) < 1) or (len(slideVerticalImages) < 2)) and (imgIndex < (len(album['albumImages'])-5)):
+            while (imgIndex < (len(album['albumImages'])-5)):
                 imgIndex += 1
 
                 imagePath = albumPath + '/' + album['albumTitle'] + \
@@ -58,17 +66,19 @@ def home(request):
                             album['albumImages'][imgIndex])
 
             if ((len(slideVerticalImages) >= 2) and (len(slideHorizontalImages) >= 1)):
+                randomSlideVerticalImages = random.sample(
+                    set(slideVerticalImages), 2)
 
                 sliceImageData = []
                 sliceImageData.append(
                     '/image/'+album['albumTitle'] + '/' + album['albumTitle'] +
-                    '-' + slideVerticalImages[0]+'.jpg')
+                    '-' + randomSlideVerticalImages[0]+'.jpg')
                 sliceImageData.append(
                     '/image/'+album['albumTitle'] + '/' + album['albumTitle'] +
-                    '-' + slideHorizontalImages[0]+'.jpg')
+                    '-' + random.choice(slideHorizontalImages)+'.jpg')
                 sliceImageData.append(
                     '/image/'+album['albumTitle'] + '/' + album['albumTitle'] +
-                    '-' + slideVerticalImages[1]+'.jpg')
+                    '-' + randomSlideVerticalImages[1]+'.jpg')
 
                 data['slide'].append(
                     {
@@ -78,10 +88,7 @@ def home(request):
                         'status': 'active' if (len(data['slide']) == 0) else '',
                         'slideNo': len(data['slide']),
                         'albumUrl': '/album/' + album['albumTitle'] + '/01/'
-
                     })
-
-    print(data['slide'])
 
     return render(request, 'home.html', {'data': data})
 
