@@ -33,6 +33,7 @@ def home(request):
             album.albumThumbnail[0] + '.jpg'
 
         data['albums'].append(albumData)
+
     existingAlbums = []
     for album in albumList:
         albumPath = constants.IMAGE_STORAGE + album['albumTitle']
@@ -94,23 +95,79 @@ def home(request):
 
 
 def trending(request):
-    return render(request, "trending.html")
+    return render(request, 'trending.html')
 
 
 def hello(request):
-    return render(request, "hello.html")
+    return render(request, 'hello.html')
 
 
-def gallery(request):
-    return render(request, "gallery.html")
+def gallery(request, pagiNo):
+    pagiNo = int(pagiNo)
+    pagiFrom = ((pagiNo-1) * constants.MAX_IMAGES_IN_ONE_PAGE)
+    pagiTo = (pagiNo * constants.MAX_IMAGES_IN_ONE_PAGE)
+
+    albumList = Album.objects[pagiFrom:pagiTo].order_by(
+        '-albumUpdatedDate')
+    data = {}
+    data['albums'] = []
+
+    for album in albumList:
+        commons.copyAlbumThumbnailFromS3ToServer(album)
+
+        albumData = {}
+        albumData['albumUrl'] = '/album/' + album['albumTitle'] + '/01/'
+        albumData['albumDisplayTitle'] = album['albumDisplayTitle']
+        albumData['albumThumbnailUrl'] = '/thumbnail/' + \
+            album.albumTitle + '/' + \
+            album.albumTitle + '-' + \
+            album.albumThumbnail[0] + '.jpg'
+
+        data['albums'].append(albumData)
+
+    pagiMin = max([(pagiNo - 5), 0])
+    pagiMax = pagiMin + 9
+    data['pagiObjs'] = []
+    data['pagiObjs'].append({
+        'pagiUrl': '/gallery/' + str(format(pagiNo-1, '03d')),
+        'pagiNo': 'Previous',
+        'pagiStatus': 'disabled' if (pagiNo == 1) else ''
+    })
+    for pagiIndex in range(pagiMin, pagiMax):
+        pagiObj = {
+            'pagiUrl': '/gallery/' + str(format(pagiIndex+1, '03d')),
+            'pagiNo': str(pagiIndex+1),
+            'pagiStatus': 'active' if (pagiIndex+1 == pagiNo) else ''
+        }
+
+        data['pagiObjs'].append(pagiObj)
+    data['pagiObjs'].append({
+        'pagiUrl': '/gallery/' + str(format(pagiNo+1, '03d')),
+        'pagiNo': 'Next',
+        'pagiStatus': 'disabled' if (pagiMax == pagiNo) else ''
+    })
+
+    data['pageNo'] = str(format(pagiNo, '03d'))
+    data['breadcrumb'] = [
+        {
+            'title': 'Home',
+            'url': '/'
+        },
+        {
+            'title': 'Gallery',
+            'url': '/gallery/001'
+        },
+    ]
+
+    return render(request, 'gallery.html', {'data': data})
 
 
 def about(request):
-    return render(request, "about.html")
+    return render(request, 'about.html')
 
 
 def models(request):
-    return render(request, "models.html")
+    return render(request, 'models.html')
 
 
 def images(request, imagePath, imageFileName):
@@ -164,4 +221,4 @@ def albums(request, albumTitle, albumPage):
     context = {
         'album': album
     }
-    return render(request, "album.html", context)
+    return render(request, 'album.html', context)
