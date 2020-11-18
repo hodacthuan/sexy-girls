@@ -7,63 +7,54 @@
 <header>
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            {% for slide in data.slide %}
+            <li data-target="#carouselExampleIndicators" data-slide-to="{{slide.slideNo}}" class="{{slide.status}}">
+            </li>
+            {% endfor %}
         </ol>
         <div class="carousel-inner" role="listbox">
+            {% for slide in data.slide %}
             <!-- Slide One - Set the background image for this slide in the line below -->
-            <div class="carousel-item active" style="padding: 0.8%;">
+            <div class="carousel-item {{slide.status}}" style="padding: 0.8%;">
                 <div class="row">
                     <div class="col-md-3 clearfix d-none d-md-block">
-
-                        <img src="/image/youmei-vol-468-infatuation-and-dream/youmei-vol-468-infatuation-and-dream-005.jpg"
-                            alt="Card image cap" style="width: 100%;
+                        <img src="{{slide.images.0}}" alt="{{slide.albumDisplayTitle}}" style="width: 100%;
                             height: 100%;
                             object-fit: cover;">
                     </div>
 
                     <div class="col-md-6">
-                        <img class="card-img-top"
-                            src="/image/youmei-vol-468-infatuation-and-dream/youmei-vol-468-infatuation-and-dream-003.jpg"
-                            alt="Card image cap" style="width: 100%;
+                        <img class="card-img-top" src="{{slide.images.1}}" alt="{{slide.albumDisplayTitle}}" style="width: 100%;
                             height: 100%;
                             object-fit: cover;">
                     </div>
 
                     <div class="col-md-3 clearfix d-none d-md-block">
-                        <img class="card-img-top"
-                            src="/image/youmei-vol-468-infatuation-and-dream/youmei-vol-468-infatuation-and-dream-011.jpg"
-                            alt="Card image cap" style="width: 100%;
+                        <img class="card-img-top" src="{{slide.images.2}}" alt="{{slide.albumDisplayTitle}}" style="width: 100%;
                             height: 800px;
                             object-fit: cover;">
                     </div>
                 </div>
                 <div class="carousel-caption d-none d-md-block">
-                    <h3 style="font-size: 24pt;">[Youmei] Vol.468 Infatuation and Dream</h3>
+                    <div
+                        style="position: absolute;bottom: 30px;height: 80px;width: 100%; background-color: black;opacity: 0.4;">
+                    </div>
+                    <h3 class="card-title" style="padding: 6%; position: absolute;bottom: 0%;height: 15%;width: 100%;">
+                        <a href="{{slide.albumUrl}}" target="_blank"
+                            style="color: white">{{slide.albumDisplayTitle}}</a>
+                    </h3>
+                </div>
+            </div>
+            {% endfor %}
 
-                </div>
-            </div>
-            <!-- Slide Two - Set the background image for this slide in the line below -->
-            <div class="carousel-item" style="background-image: url('http://placehold.it/1900x1080')">
-                <div class="carousel-caption d-none d-md-block">
-                    <h3>Second Slide</h3>
-                    <p>This is a description for the second slide.</p>
-                </div>
-            </div>
-            <!-- Slide Three - Set the background image for this slide in the line below -->
-            <div class="carousel-item" style="background-image: url('http://placehold.it/1900x1080')">
-                <div class="carousel-caption d-none d-md-block">
-                    <h3>Third Slide</h3>
-                    <p>This is a description for the third slide.</p>
-                </div>
-            </div>
         </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev"
+            style="width: 25%;">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>
         </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next"
+            style="width: 25%;">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
         </a>

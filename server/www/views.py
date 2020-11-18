@@ -5,6 +5,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from pageScrape.models import Album
 import pageScrape
+from os import path
+from sexybaby import imageUtils
 from sexybaby.commons import dataLogging
 from sexybaby import constants
 import logging
@@ -17,6 +19,7 @@ def home(request):
     albumList = Album.objects[:16].order_by('-albumUpdatedDate')
     data = {}
     data['albums'] = []
+    data['slide'] = []
     for album in albumList:
         commons.copyAlbumThumbnailFromS3ToServer(album)
 
@@ -29,6 +32,56 @@ def home(request):
             album.albumThumbnail[0] + '.jpg'
 
         data['albums'].append(albumData)
+
+        albumPath = constants.IMAGE_STORAGE + album['albumTitle']
+        if (len(data['slide']) < 5) and path.isdir(albumPath):
+            slideData = {}
+
+            slideVerticalImages = []
+            slideHorizontalImages = []
+
+            imgIndex = 0
+            while ((len(slideHorizontalImages) < 1) or (len(slideVerticalImages) < 2)) and (imgIndex < (len(album['albumImages'])-5)):
+                imgIndex += 1
+
+                imagePath = albumPath + '/' + album['albumTitle'] + \
+                    '-' + album['albumImages'][imgIndex] + '.jpg'
+
+                if path.exists(imagePath):
+                    imageSize = imageUtils.getImageSize(imagePath)
+
+                    if (imageSize[0] < imageSize[1]) and (imageSize[0] > 500) and (imageSize[1] > 500):
+                        slideVerticalImages.append(
+                            album['albumImages'][imgIndex])
+                    else:
+                        slideHorizontalImages.append(
+                            album['albumImages'][imgIndex])
+
+            if ((len(slideVerticalImages) >= 2) and (len(slideHorizontalImages) >= 1)):
+
+                sliceImageData = []
+                sliceImageData.append(
+                    '/image/'+album['albumTitle'] + '/' + album['albumTitle'] +
+                    '-' + slideVerticalImages[0]+'.jpg')
+                sliceImageData.append(
+                    '/image/'+album['albumTitle'] + '/' + album['albumTitle'] +
+                    '-' + slideHorizontalImages[0]+'.jpg')
+                sliceImageData.append(
+                    '/image/'+album['albumTitle'] + '/' + album['albumTitle'] +
+                    '-' + slideVerticalImages[1]+'.jpg')
+
+                data['slide'].append(
+                    {
+                        'images': sliceImageData,
+                        'albumDisplayTitle': album['albumDisplayTitle'],
+                        'albumTitle': album['albumTitle'],
+                        'status': 'active' if (len(data['slide']) == 0) else '',
+                        'slideNo': len(data['slide']),
+                        'albumUrl': '/album/' + album['albumTitle'] + '/01/'
+
+                    })
+
+    print(data['slide'])
 
     return render(request, 'home.html', {'data': data})
 
