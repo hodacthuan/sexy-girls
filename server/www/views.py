@@ -113,6 +113,8 @@ def gallery(request, pagiNo):
     albumList = Album.objects[pagiFrom:pagiTo].order_by(
         '-albumUpdatedDate')
     data = {}
+
+    # ALBUM LIST
     data['albums'] = []
 
     for album in albumList:
@@ -128,6 +130,7 @@ def gallery(request, pagiNo):
 
         data['albums'].append(albumData)
 
+    # PAGINATION
     pagiMin = max([(pagiNo - 5), 0])
     pagiMax = pagiMin + 9
     data['pagiObjs'] = []
