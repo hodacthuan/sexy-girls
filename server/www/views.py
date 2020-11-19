@@ -106,7 +106,7 @@ def hello(request):
     return render(request, 'hello.html')
 
 
-def getDataForTemplate(pagiNo, albumList, urlPath):
+def getDataForTemplate(pagiNo, albumList, urlPath, albumCount):
     data = {}
 
     data['albums'] = []
@@ -126,7 +126,7 @@ def getDataForTemplate(pagiNo, albumList, urlPath):
 
     # PAGINATION
     pagiMin = max([(pagiNo - 5), 0])
-    pagiMax = min([(pagiMin + 9), math.ceil(len(albumList) /
+    pagiMax = min([(pagiMin + 9), math.ceil(albumCount /
                                             constants.MAX_IMAGES_IN_ONE_PAGE)])
 
     data['pagiObjs'] = []
@@ -166,7 +166,10 @@ def gallery(request, pagiNo):
     albumList = Album.objects.skip(albumIndexFrom).limit(constants.MAX_IMAGES_IN_ONE_PAGE).order_by(
         '-albumUpdatedDate')
 
-    data = getDataForTemplate(pagiNo, albumList, 'gallery')
+    albumListTotalNumber = Album.objects.count()
+
+    data = getDataForTemplate(
+        pagiNo, albumList, 'gallery', albumListTotalNumber)
 
     # BREADCRUMB
     data['breadcrumb'] = [
@@ -190,7 +193,11 @@ def category(request, categoryTitle, pagiNo):
     albumList = Album.objects(albumCategories__contains=categoryTitle).skip(albumIndexFrom).limit(constants.MAX_IMAGES_IN_ONE_PAGE).order_by(
         '-albumUpdatedDate')
 
-    data = getDataForTemplate(pagiNo, albumList, 'category/' + categoryTitle)
+    albumListTotalNumber = Album.objects(
+        albumCategories__contains=categoryTitle).count()
+
+    data = getDataForTemplate(
+        pagiNo, albumList, 'category/' + categoryTitle, albumListTotalNumber)
 
     # BREADCRUMB
     categoryList = Category.objects(categoryTitle=categoryTitle)
@@ -220,7 +227,11 @@ def tag(request, tagTitle, pagiNo):
     albumList = Album.objects(albumTags__contains=tagTitle).skip(albumIndexFrom).limit(constants.MAX_IMAGES_IN_ONE_PAGE).order_by(
         '-albumUpdatedDate')
 
-    data = getDataForTemplate(pagiNo, albumList, 'tag/' + tagTitle)
+    albumListTotalNumber = Album.objects(
+        albumTags__contains=tagTitle).count()
+
+    data = getDataForTemplate(
+        pagiNo, albumList, 'tag/' + tagTitle, albumListTotalNumber)
 
     # BREADCRUMB
     tagList = Tag.objects(tagTitle=tagTitle)
