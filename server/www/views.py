@@ -126,7 +126,9 @@ def getDataForTemplate(pagiNo, albumList, urlPath):
 
     # PAGINATION
     pagiMin = max([(pagiNo - 5), 0])
-    pagiMax = pagiMin + 9
+    pagiMax = min([(pagiMin + 9), math.ceil(len(albumList) /
+                                            constants.MAX_IMAGES_IN_ONE_PAGE)])
+
     data['pagiObjs'] = []
     data['pagiObjs'].append({
         'pagiUrl': '/' + urlPath + '/' + str(format(pagiNo-1, '03d')),
@@ -205,6 +207,36 @@ def category(request, categoryTitle, pagiNo):
         {
             'title': categoryList[0]['categoryDisplayTitle'],
             'url': '/category/'+categoryTitle + '/001'
+        },
+    ]
+
+    return render(request, 'gallery.html', {'data': data})
+
+
+def tag(request, tagTitle, pagiNo):
+    pagiNo = int(pagiNo)
+    albumIndexFrom = ((pagiNo-1) * constants.MAX_IMAGES_IN_ONE_PAGE)
+
+    albumList = Album.objects(albumTags__contains=tagTitle).skip(albumIndexFrom).limit(constants.MAX_IMAGES_IN_ONE_PAGE).order_by(
+        '-albumUpdatedDate')
+
+    data = getDataForTemplate(pagiNo, albumList, 'tag/' + tagTitle)
+
+    # BREADCRUMB
+    tagList = Tag.objects(tagTitle=tagTitle)
+
+    data['breadcrumb'] = [
+        {
+            'title': 'Home',
+            'url': '/'
+        },
+        {
+            'title': 'Tag',
+            'url': '/tag'
+        },
+        {
+            'title': tagList[0]['tagDisplayTitle'],
+            'url': '/tag/'+tagTitle + '/001'
         },
     ]
 
