@@ -17,6 +17,13 @@ from sexybaby import commons
 logger = logging.getLogger(__name__)
 
 
+allCategory = Category.objects()
+p = int(len(allCategory)/3)
+menu = {
+    'categories': [allCategory[0:p], allCategory[p:2*p], allCategory[2*p:]],
+}
+
+
 def home(request):
     albumList = Album.objects[:16].order_by('-albumUpdatedDate')
     data = {}
@@ -95,7 +102,7 @@ def home(request):
                         'albumUrl': '/album/' + album['albumTitle'] + '/01/'
                     })
 
-    return render(request, 'home.html', {'data': data})
+    return render(request, 'home.html', {'data': data, 'menu': menu})
 
 
 def trending(request):
@@ -183,7 +190,7 @@ def gallery(request, pagiNo):
         },
     ]
 
-    return render(request, 'gallery.html', {'data': data})
+    return render(request, 'gallery.html', {'data': data, 'menu': menu})
 
 
 def category(request, categoryTitle, pagiNo):
@@ -217,7 +224,7 @@ def category(request, categoryTitle, pagiNo):
         },
     ]
 
-    return render(request, 'gallery.html', {'data': data})
+    return render(request, 'gallery.html', {'data': data, 'menu': menu})
 
 
 def tag(request, tagTitle, pagiNo):
@@ -251,7 +258,7 @@ def tag(request, tagTitle, pagiNo):
         },
     ]
 
-    return render(request, 'gallery.html', {'data': data})
+    return render(request, 'gallery.html', {'data': data, 'menu': menu})
 
 
 def about(request):
@@ -310,7 +317,4 @@ def albums(request, albumTitle, albumPage):
         'pagiStatus': 'disabled' if (pagiMax == pagiNumber) else ''
     })
 
-    context = {
-        'album': album
-    }
-    return render(request, 'album.html', context)
+    return render(request, 'album.html', {'album': album, 'menu': menu})
