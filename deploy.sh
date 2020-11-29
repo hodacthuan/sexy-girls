@@ -61,6 +61,22 @@ function upService() {
 
 }
 
+function redisCli() {
+    export DEPLOY_ENV=${2}
+
+    ENVS=(local prod)
+    [[ ! " ${ENVS[@]} " =~ " ${DEPLOY_ENV} " ]] && echo "PLEASE USE ENV: ${ENVS[@]}" && exit 0
+
+    case $DEPLOY_ENV in
+        prod)
+            REDIS_DB=0
+            ;;
+        local)
+            REDIS_DB=1
+            ;;
+    esac
+}
+
 
 COMMAND=$1
 
@@ -111,8 +127,14 @@ case $COMMAND in
         python3 server/manage.py
         ;;
     
-    redissh)
+    redis-sh)
         redis-cli -h $REDISDB_SERVER -p $REDISDB_PORT -a $REDISDB_PASSWORD
         ;;
 
+    redis-clean)
+        redisCli $@
+
+        redis-cli -h $REDISDB_SERVER -p $REDISDB_PORT -a $REDISDB_PASSWORD -n $REDIS_DB FLUSHDB
+        
+        ;;
 esac
