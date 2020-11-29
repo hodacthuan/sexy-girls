@@ -54,8 +54,12 @@ functionKey = {
 }
 
 
+def envKey(key):
+    return constants.DEPLOY_ENV + ':' + key
+
+
 def get(key):
-    result = redisClient.get(key)
+    result = redisClient.get(envKey(key))
     if result:
         return result.decode('utf-8')
     else:
@@ -63,8 +67,8 @@ def get(key):
 
 
 def set(key, value):
-    return redisClient.set(key, value.encode('utf-8'))
+    return redisClient.set(envKey(key), value.encode('utf-8'))
 
 
 def setex(key, value, ttl):
-    return redisClient.set(key, value.encode('utf-8'), ttl)
+    return redisClient.set(envKey(key), value.encode('utf-8'), ttl)
