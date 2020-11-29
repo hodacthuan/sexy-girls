@@ -22,6 +22,21 @@ function ec2SSH() {
     esac
 }
 
+
+function ec2Deploy() {
+    export SERVER_NAME=${2}
+
+    case $SERVER_NAME in
+        server)
+            chmod 400 $EC2_KEYPAIR
+            ssh -i $EC2_KEYPAIR $EC2_HOST 'git -C ~/sexy-girls pull && ~/sexy-girls/deploy.sh up prod'
+            ;;
+        scrape)
+            chmod 400 $SCRAPE_KEYPAIR
+            ssh -i $SCRAPE_KEYPAIR $SCRAPE_HOST 'git -C ~/sexy-girls pull && ~/sexy-girls/deploy.sh up scrape'
+            ;;
+    esac
+}
 function awsConfigure() {
     aws configure --profile ${ADMIN_AWS_PROFILE} set aws_access_key_id ${ADMIN_ACCESS_KEY_ID}
     aws configure --profile ${ADMIN_AWS_PROFILE} set aws_secret_access_key ${ADMIN_SECRET_ACCESS_KEY}
@@ -91,7 +106,7 @@ case $COMMAND in
         ;;
 
     deploy)
-        ec2Deploy
+        ec2Deploy $@
         ;;
 
     up)
