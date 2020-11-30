@@ -148,4 +148,13 @@ def checkifthumbnailexistandFix():
     albumInDB = Album.objects(albumSource=source)
 
     for album in albumInDB:
-        album['albumStorePath'] + album['albumThumbnail'][0]
+        print(album['albumTitle'])
+        exist = aws.ifKeyExist(album['albumStorePath'] + '/' +
+                               album['albumThumbnail'][0] + '.jpg')
+        if not exist:
+            albumNewThumbnail = [album['albumImages'][0]]
+            print(album['albumThumbnail'][0])
+            print(album['albumSourceUrl'])
+            print(albumNewThumbnail)
+            Album.objects(albumSource=source, albumSourceUrl=album['albumSourceUrl']).update_one(
+                albumThumbnail=albumNewThumbnail)

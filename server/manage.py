@@ -28,4 +28,12 @@ if __name__ == '__main__':
         if params[2] == 'hotgirlbiz':
             from pageScrape import hotgirlbiz
             hotgirlbiz.main()
+
+    if params[1] == 'run-script':
+        if params[2] == 'kissgoddess':
+            from pageScrape import kissgoddess
+            kissgoddess.main()
+        if params[2] == 'hotgirlbiz':
+            from pageScrape import hotgirlbizUtils
+            hotgirlbizUtils.checkifthumbnailexistandFix()
     main()

@@ -1,16 +1,16 @@
-from sexybaby import constants
-import logging
-import mongoengine
-import pageScrape
-import boto3
-import uuid
-import time
-import shutil
-import os.path
-from os import path
-import coloredlogs
 import os
+import time
+import uuid
+import boto3
+import shutil
+import logging
+import botocore
+import pageScrape
+import mongoengine
+import coloredlogs
+from sexybaby import constants
 from botocore.exceptions import NoCredentialsError
+from botocore.errorfactory import ClientError
 import urllib.request
 coloredlogs.install()
 
@@ -144,3 +144,13 @@ def copyFromS3(s3FilePath, filePath):
         s3.download_file(constants.AWS_BUCKET, s3FilePath, filePath)
     except:
         pass
+
+
+def ifKeyExist(key):
+    try:
+        s3.head_object(Bucket=constants.AWS_BUCKET, Key=key)
+
+    except ClientError:
+        return False
+
+    return True
