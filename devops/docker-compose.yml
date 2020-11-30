@@ -63,6 +63,7 @@ services:
     env_file:
       - commons.env
       - secrets.env
+      - ${DEPLOY_ENV:-local}.env
     logging:
       options:
         max-size: 10m

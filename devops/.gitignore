@@ -1,6 +1,7 @@
 secrets.env
 local.env
 prod.env
+scrape.env
 sexy-girls.pem
 *.pem
 ssl-config
