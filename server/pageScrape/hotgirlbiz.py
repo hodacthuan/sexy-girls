@@ -125,6 +125,7 @@ def albumScrapeAllImageInAlbum(album):
 
         imgUrls = []
         imgUrls.append(album['albumThumbnail'][0])
+        album['albumThumbnail'] = []
 
         album['albumImages'] = []
         imagesHtml = html.find(
@@ -150,6 +151,9 @@ def albumScrapeAllImageInAlbum(album):
                         if imgNo == '001':
                             album['albumThumbnail'] = ['001']
                         else:
+                            if len(album['albumThumbnail']) == 0:
+                                album['albumThumbnail'] = [imgNo]
+
                             album['albumImages'].append(imgNo)
                 except:
                     pass

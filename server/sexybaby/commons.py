@@ -55,7 +55,7 @@ def downloadAndSaveToS3(url, filePath, fileName):
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e))
 
-    if os.path.getsize(tempFile) > 0:
+    if os.path.isfile(tempFile) and os.path.getsize(tempFile) > 0:
         return uploadToAws(
             tempFile, filePath + '/' + fileName)
     else:
@@ -87,13 +87,17 @@ def copyAlbumThumbnailFromS3ToServer(album):
     if cache.get(cacheKey):
         return
 
-    storePathThumbnail = constants.THUMBNAIL_STORAGE + album['albumTitle']
-    if not(path.isdir(storePathThumbnail)):
-        os.makedirs(storePathThumbnail)
+    folderPath = constants.THUMBNAIL_STORAGE + album['albumTitle']
+    if not(path.isdir(folderPath)):
+        os.makedirs(folderPath)
 
-        for imageNo in album['albumThumbnail']:
-            copyFromS3(album['albumStorePath'] + '/' + imageNo + '.jpg',
-                       storePathThumbnail + '/' + album['albumTitle'] + '-' + imageNo + '.jpg')
+    for imageNo in album['albumThumbnail']:
+        filePath = folderPath + '/' + \
+            album['albumTitle'] + '-' + imageNo + '.jpg'
+
+        if not(path.isfile(filePath)):
+            copyFromS3(album['albumStorePath'] + '/' +
+                       imageNo + '.jpg', filePath)
 
     cache.setex(cacheKey, 'true', cache.ttl['month'])
 

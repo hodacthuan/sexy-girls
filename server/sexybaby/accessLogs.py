@@ -31,7 +31,6 @@ class AccessLogsMiddleware(object):
         data['get'] = dict(request.GET.copy())
         data['post'] = dict(request.POST.copy())
 
-        # remove password form post data for security reasons
         keysToBeRemoved = ['password', 'csrfmiddlewaretoken']
         for key in keysToBeRemoved:
             data['post'].pop(key, None)
@@ -39,7 +38,7 @@ class AccessLogsMiddleware(object):
         accessLogsData['data'] = data
         accessLogsData['timestamp'] = timezone.now()
 
-        AccessLogsModel(**accessLogsData).save()
+        # AccessLogsModel(**accessLogsData).save()
 
         response = self.get_response(request)
         return response

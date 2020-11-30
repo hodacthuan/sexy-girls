@@ -141,3 +141,11 @@ def correctAndSlugifyCategory():
                           newCategorys, album['albumSourceUrl'])
                     Album.objects(albumSource=source, albumSourceUrl=album['albumSourceUrl']).update_one(
                         albumCategories=newCategorys)
+
+
+def checkifthumbnailexistandFix():
+
+    albumInDB = Album.objects(albumSource=source)
+
+    for album in albumInDB:
+        album['albumStorePath'] + album['albumThumbnail'][0]
