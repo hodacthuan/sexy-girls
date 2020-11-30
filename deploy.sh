@@ -83,10 +83,10 @@ function redisCli() {
     [[ ! " ${ENVS[@]} " =~ " ${DEPLOY_ENV} " ]] && echo "PLEASE USE ENV: ${ENVS[@]}" && exit 0
 
     case $DEPLOY_ENV in
-        prod)
+        local)
             REDIS_DB=0
             ;;
-        local)
+        prod)
             REDIS_DB=1
             ;;
     esac
@@ -148,7 +148,7 @@ case $COMMAND in
 
     redis-clean)
         redisCli $@
-
+        echo $REDIS_DB
         redis-cli -h $REDISDB_SERVER -p $REDISDB_PORT -a $REDISDB_PASSWORD -n $REDIS_DB FLUSHDB
         
         ;;
