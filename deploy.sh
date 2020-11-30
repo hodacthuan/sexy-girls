@@ -148,7 +148,7 @@ case $COMMAND in
 
     redis-clean)
         redisCli $@
-        echo $REDIS_DB
+        
         redis-cli -h $REDISDB_SERVER -p $REDISDB_PORT -a $REDISDB_PASSWORD -n $REDIS_DB FLUSHDB
         
         ;;
