@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 '''
 
-from sexybaby import constants
+from sexybaby.constants import *
 from pathlib import Path
 import os
 import mongoengine
@@ -98,10 +98,10 @@ DATABASES = {
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": constants.REDISDB_URL,
+#         "LOCATION": REDISDB_URL,
 #         "OPTIONS": {
 #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             "PASSWORD": constants.REDISDB_PASSWORD,
+#             "PASSWORD": REDISDB_PASSWORD,
 #         }
 #     }
 # }

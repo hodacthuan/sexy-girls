@@ -12,15 +12,16 @@ import pageScrape
 import urllib.request
 from os import path
 from slugify import slugify
-from sexybaby import constants, cache
+from sexybaby import cache
+from sexybaby.constants import *
 from .aws import copyFromS3, uploadToAws
-from pageScrape.models import Album, ModelInfo, Tag, Category
+from pageScrape.models import *
 from botocore.exceptions import NoCredentialsError
 
 coloredlogs.install()
 logger = logging.getLogger(__name__)
-s3 = boto3.client('s3', aws_access_key_id=constants.AWS_ACCESS_KEY,
-                  aws_secret_access_key=constants.AWS_SECRET_KEY)
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
+                  aws_secret_access_key=AWS_SECRET_KEY)
 
 
 def dataLogging(obj, prefix=''):
@@ -49,7 +50,7 @@ def downloadAndSaveToS3(url, filePath, fileName):
     try:
         opener = urllib.request.URLopener()
         opener.addheader(
-            'User-Agent', constants.USER_AGENT_HEADER)
+            'User-Agent', USER_AGENT_HEADER)
         opener.retrieve(url, tempFile)
 
     except OSError as e:
@@ -69,7 +70,7 @@ def copyAlbumImagesFromS3ToServer(album):
     if cache.get(cacheKey):
         return
 
-    storePath = constants.IMAGE_STORAGE + album['albumTitle']
+    storePath = IMAGE_STORAGE + album['albumTitle']
     if not(path.isdir(storePath)):
         os.makedirs(storePath)
 
@@ -87,7 +88,7 @@ def copyAlbumThumbnailFromS3ToServer(album):
     if cache.get(cacheKey):
         return
 
-    folderPath = constants.THUMBNAIL_STORAGE + album['albumTitle']
+    folderPath = THUMBNAIL_STORAGE + album['albumTitle']
     if not(path.isdir(folderPath)):
         os.makedirs(folderPath)
 
@@ -193,7 +194,7 @@ def getTagDetailByTitle(tagTitle):
 
 def debug(value):
     try:
-        if constants.DEPLOY_ENV == 'local':
+        if DEPLOY_ENV == 'local':
             logging.info(value)
     except:
         logging.info('Failed to debug')

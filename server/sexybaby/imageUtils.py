@@ -1,6 +1,6 @@
 from os import listdir
 from os.path import isfile, join
-from . import constants
+from .constants import *
 import sys
 from PIL import Image, ImageColor
 

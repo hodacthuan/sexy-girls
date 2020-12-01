@@ -8,14 +8,14 @@ import botocore
 import pageScrape
 import mongoengine
 import coloredlogs
-from sexybaby import constants
+from sexybaby.constants import *
 from botocore.exceptions import NoCredentialsError
 from botocore.errorfactory import ClientError
 import urllib.request
 coloredlogs.install()
 
-s3 = boto3.client('s3', aws_access_key_id=constants.AWS_ACCESS_KEY,
-                  aws_secret_access_key=constants.AWS_SECRET_KEY)
+s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
+                  aws_secret_access_key=AWS_SECRET_KEY)
 
 
 def deleteAwsS3Dir(s3FilePath):
@@ -37,7 +37,7 @@ def deleteAwsS3Dir(s3FilePath):
 def deleteAwsS3Object(s3FilePath):
     try:
         s3.delete_object(
-            Bucket=constants.AWS_BUCKET,
+            Bucket=AWS_BUCKET,
             Key=s3FilePath
         )
 
@@ -53,7 +53,7 @@ def deleteAwsS3Object(s3FilePath):
 def uploadToAws(filePath, s3FilePath):
 
     try:
-        s3.upload_file(filePath, constants.AWS_BUCKET, s3FilePath, ExtraArgs={
+        s3.upload_file(filePath, AWS_BUCKET, s3FilePath, ExtraArgs={
                        'ContentType': 'image/jpeg'})
         return True
     except FileNotFoundError:
@@ -68,7 +68,7 @@ def getObjectSize(s3FilePath):
 
     try:
         response = s3.head_object(
-            Bucket=constants.AWS_BUCKET,
+            Bucket=AWS_BUCKET,
             Key=s3FilePath)
         size = response['ContentLength']
         return size
@@ -85,7 +85,7 @@ def listAllObjectsInFolder(prefix):
     keys = []
     try:
         kwargs = {
-            'Bucket': constants.AWS_BUCKET,
+            'Bucket': AWS_BUCKET,
             'Prefix': prefix
         }
 
@@ -109,7 +109,7 @@ def listSubfolderInFolder(prefix):
     """Get a list of all keys in an S3 bucket."""
     keys = []
     kwargs = {
-        'Bucket': constants.AWS_BUCKET,
+        'Bucket': AWS_BUCKET,
         'Prefix': prefix,
         'Delimiter': '/'
     }
@@ -131,24 +131,24 @@ def listSubfolderInFolder(prefix):
 def copyObjectByKey(fromKey, toKey):
 
     copySource = {
-        'Bucket': constants.AWS_BUCKET,
+        'Bucket': AWS_BUCKET,
         'Key': fromKey
     }
-    s3.copy(copySource, constants.AWS_BUCKET, toKey)
+    s3.copy(copySource, AWS_BUCKET, toKey)
 
     return True
 
 
 def copyFromS3(s3FilePath, filePath):
     try:
-        s3.download_file(constants.AWS_BUCKET, s3FilePath, filePath)
+        s3.download_file(AWS_BUCKET, s3FilePath, filePath)
     except:
         pass
 
 
 def ifKeyExist(key):
     try:
-        s3.head_object(Bucket=constants.AWS_BUCKET, Key=key)
+        s3.head_object(Bucket=AWS_BUCKET, Key=key)
 
     except ClientError:
         return False

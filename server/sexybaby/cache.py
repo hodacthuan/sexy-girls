@@ -1,15 +1,15 @@
 import json
 import redis
-from . import constants
+from .constants import *
 from django.core import serializers
-from pageScrape.models import Album, Category, Tag
+from pageScrape.models import *
 from django.forms.models import model_to_dict
 
 pool = redis.ConnectionPool(
-    host=constants.REDISDB_SERVER,
-    port=constants.REDISDB_PORT,
-    db=constants.REDISDB_DBNUMBER,
-    password=constants.REDISDB_PASSWORD
+    host=REDISDB_SERVER,
+    port=REDISDB_PORT,
+    db=REDISDB_DBNUMBER,
+    password=REDISDB_PASSWORD
 )
 
 redisClient = redis.Redis(connection_pool=pool)
@@ -55,7 +55,7 @@ functionKey = {
 
 
 def envKey(key):
-    return constants.DEPLOY_ENV + ':' + key
+    return DEPLOY_ENV + ':' + key
 
 
 def get(key):

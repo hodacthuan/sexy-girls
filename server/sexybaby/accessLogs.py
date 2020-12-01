@@ -1,5 +1,5 @@
 from .models import AccessLogsModel
-from pageScrape.models import Album
+from pageScrape.models import *
 from django.conf import settings
 from django.utils import timezone
 import logging
