@@ -8,10 +8,7 @@ import pageScrape
 import random
 from mongoengine.queryset.visitor import Q
 from os import path
-from sexybaby import imageUtils
-from sexybaby.commons import dataLogging
-from sexybaby import constants
-from sexybaby import cache
+from sexybaby import constants, commons, cache, imageUtils
 import logging
 import math
 from sexybaby import commons
@@ -30,20 +27,8 @@ def home(request):
     data = {}
 
     # ALBUM LIST
-    data['albums'] = []
+    data['albums'] = commons.albumHtmlPreparation(albumList)
     data['slide'] = []
-    for album in albumList:
-        commons.copyAlbumThumbnailFromS3ToServer(album)
-
-        albumData = {}
-        albumData['albumUrl'] = '/album/' + album['albumTitle'] + '/01/'
-        albumData['albumDisplayTitle'] = album['albumDisplayTitle']
-        albumData['albumThumbnailUrl'] = '/thumbnail/' + \
-            album.albumTitle + '/' + \
-            album.albumTitle + '-' + \
-            album.albumThumbnail[0] + '.jpg'
-
-        data['albums'].append(albumData)
 
     # SLIDE
     existingAlbums = []
@@ -117,20 +102,7 @@ def hello(request):
 def getDataForTemplate(pagiNo, albumList, urlPath, albumCount):
     data = {}
 
-    data['albums'] = []
-
-    for album in albumList:
-        commons.copyAlbumThumbnailFromS3ToServer(album)
-
-        albumData = {}
-        albumData['albumUrl'] = '/album/' + album['albumTitle'] + '/01/'
-        albumData['albumDisplayTitle'] = album['albumDisplayTitle']
-        albumData['albumThumbnailUrl'] = '/thumbnail/' + \
-            album.albumTitle + '/' + \
-            album.albumTitle + '-' + \
-            album.albumThumbnail[0] + '.jpg'
-
-        data['albums'].append(albumData)
+    data['albums'] = commons.albumHtmlPreparation(albumList)
 
     # PAGINATION
     pagiMin = max([(pagiNo - 5), 0])
@@ -287,26 +259,14 @@ def getListOfTagDetail(albumTags):
 
 
 def getRelatedAlbums(albumTags):
-
     albumList = []
-    results = []
+
     for tag in albumTags:
         albumList += commons.getAlbumByTag(tag)
 
     random.shuffle(albumList)
 
-    for album in albumList[0:16]:
-        commons.copyAlbumThumbnailFromS3ToServer(album)
-
-        albumData = {}
-        albumData['albumUrl'] = '/album/' + album['albumTitle'] + '/01/'
-        albumData['albumDisplayTitle'] = album['albumDisplayTitle']
-        albumData['albumThumbnailUrl'] = '/thumbnail/' + \
-            album['albumTitle'] + '/' + \
-            album['albumTitle'] + '-' + \
-            album['albumThumbnail'][0] + '.jpg'
-
-        results.append(albumData)
+    results = commons.albumHtmlPreparation(albumList[0:16])
 
     return results
 

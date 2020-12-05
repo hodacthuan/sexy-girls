@@ -198,3 +198,21 @@ def debug(value):
             logging.info(value)
     except:
         logging.info('Failed to debug')
+
+
+def albumHtmlPreparation(albumList):
+    results = []
+    for album in albumList:
+        copyAlbumThumbnailFromS3ToServer(album)
+
+        albumData = {}
+        albumData['albumUrl'] = '/album/' + album['albumTitle'] + '/01/'
+        albumData['albumDisplayTitle'] = album['albumDisplayTitle']
+        albumData['albumThumbnailUrl'] = '/thumbnail/' + \
+            album['albumTitle'] + '/' + \
+            album['albumTitle'] + '-' + \
+            album['albumThumbnail'][0] + '.jpg'
+
+        results.append(albumData)
+
+    return results
