@@ -63,4 +63,29 @@ def register(request):
 
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+
+    data = {}
+    data['cards'] = [
+        {
+            'title': 'Album Status',
+            'link': '/admin/database/albums',
+            'background': 'bg-primary'
+        },
+        {
+            'title': 'Warnning',
+            'link': '/admin/database/warnning',
+            'background': 'bg-warning'
+        },
+        {
+            'title': 'Errors',
+            'link': '/admin/database/errors',
+            'background': 'bg-danger'
+        },
+        {
+            'title': 'Total Views',
+            'link': '/admin/database/views',
+            'background': 'bg-success'
+        }
+    ]
+
+    return render(request, 'dashboard.html', {'data': data})
