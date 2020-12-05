@@ -68,7 +68,7 @@ def dashboard(request):
     data['cards'] = [
         {
             'title': 'Album Status',
-            'link': '/admin/database/albums',
+            'link': '/admin/database/album',
             'background': 'bg-primary'
         },
         {
@@ -89,3 +89,8 @@ def dashboard(request):
     ]
 
     return render(request, 'dashboard.html', {'data': data})
+
+
+def databaseAlbum(request):
+
+    return render(request, 'databaseAlbum.html')
