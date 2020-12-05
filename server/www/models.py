@@ -5,5 +5,14 @@ from django import forms
 
 
 class LoginForm(forms.Form):
-    email = forms.CharField(label='Your name', max_length=100)
-    password = forms.CharField(label='Your password', max_length=100)
+    email = forms.CharField()
+    password = forms.CharField()
+
+
+class RegisterForm(forms.Form):
+    email = forms.CharField()
+    password = forms.CharField()
+    confirmPassword = forms.CharField()
+    firstName = forms.CharField()
+    lastName = forms.CharField()
+    registerToken = forms.CharField()

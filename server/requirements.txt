@@ -4,6 +4,7 @@ tqdm==4.54.0
 redis==3.5.3
 image==1.5.33
 boto3==1.16.9
+bcrypt
 daphne==3.0.0
 django==3.0.5
 moviepy==1.0.0

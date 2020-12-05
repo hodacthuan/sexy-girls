@@ -8,8 +8,7 @@ urlpatterns = [
     path('login', viewsAdmin.login),
     path('password', viewsAdmin.password),
     path('register', viewsAdmin.register),
-    path('dashboard', viewsAdmin.dashboard),
-    path('login', viewsAdmin.login),
+    path('dashboard', viewsAdmin.dashboard)
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

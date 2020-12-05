@@ -21,3 +21,14 @@ class Status(mongoengine.Document):
     hotgirlbizPage = mongoengine.IntField()
 
     meta = {'collection': 'status', 'strict': False}
+
+
+class UserModel(mongoengine.Document):
+    objects = mongoengine.QuerySetManager()
+
+    email = mongoengine.StringField()
+    password = mongoengine.StringField()
+    firstName = mongoengine.StringField()
+    lastName = mongoengine.StringField()
+
+    meta = {'collection': 'users', 'strict': False}

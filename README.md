@@ -122,6 +122,9 @@ Django
 - [How To Scrape Web Pages with Beautiful Soup and Python 3](https://www.digitalocean.com/community/tutorials/how-to-scrape-web-pages-with-beautiful-soup-and-python-3)
 - [How to use Django with Apache and mod_wsgi](https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/modwsgi/)
 
+JWT
+- [PyJWT 1.7.1](https://pypi.org/project/PyJWT/)
+
 Django - Official Docs
 - [Working with forms](https://docs.djangoproject.com/en/3.1/topics/forms/)
 - [How to use sessions](https://docs.djangoproject.com/en/3.1/topics/http/sessions/)

@@ -26,6 +26,7 @@ REDISDB_SERVER = os.environ['REDISDB_SERVER']
 REDISDB_PORT = os.environ['REDISDB_PORT']
 REDISDB_DBNUMBER = os.environ['REDISDB_DBNUMBER']
 IMAGE_HOST = os.environ['IMAGE_HOST']
+REGISTER_TOKEN = os.environ['REGISTER_TOKEN']
 
 IMAGE_STORAGE = os.path.join(os.path.dirname(
     __file__), '../tempStorages/images/')
