@@ -11,7 +11,6 @@ from os import path
 from sexybaby import constants, commons, cache, imageUtils
 import logging
 import math
-from sexybaby import commons
 logger = logging.getLogger(__name__)
 
 
@@ -266,7 +265,9 @@ def getRelatedAlbums(albumTags):
 
     random.shuffle(albumList)
 
-    results = commons.albumHtmlPreparation(albumList[0:16])
+    uniqueAlbumList = commons.uniqueAlbumList(albumList)
+
+    results = commons.albumHtmlPreparation(uniqueAlbumList[0:16])
 
     return results
 

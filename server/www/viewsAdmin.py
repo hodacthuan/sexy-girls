@@ -6,6 +6,8 @@ from .models import *
 from sexybaby.models import *
 from sexybaby.constants import *
 import bcrypt
+from pageScrape.models import Album, Category, Tag
+from sexybaby import constants, commons, cache, imageUtils
 salt = bcrypt.gensalt(rounds=4)
 print(salt)
 
@@ -92,5 +94,11 @@ def dashboard(request):
 
 
 def databaseAlbum(request):
+    albumList = Album.objects.limit(
+        constants.MAX_IMAGES_IN_ONE_PAGE).order_by('-albumUpdatedDate')
 
-    return render(request, 'databaseAlbum.html')
+    data = {}
+    data['albums'] = commons.albumHtmlPreparation(albumList)
+    data['headers'] = ['Title', 'Tags', 'Categories']
+
+    return render(request, 'databaseAlbum.html', {'data': data})

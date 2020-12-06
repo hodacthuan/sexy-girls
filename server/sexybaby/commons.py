@@ -206,6 +206,8 @@ def albumHtmlPreparation(albumList):
         copyAlbumThumbnailFromS3ToServer(album)
 
         albumData = {}
+        albumData['albumTags'] = album['albumTags']
+        albumData['albumCategories'] = album['albumCategories']
         albumData['albumUrl'] = '/album/' + album['albumTitle'] + '/01/'
         albumData['albumDisplayTitle'] = album['albumDisplayTitle']
         albumData['albumThumbnailUrl'] = '/thumbnail/' + \
@@ -215,4 +217,12 @@ def albumHtmlPreparation(albumList):
 
         results.append(albumData)
 
+    return results
+
+
+def uniqueAlbumList(albumList):
+    results = []
+    for album in albumList:
+        if not album in results:
+            results.append(album)
     return results
