@@ -29,7 +29,7 @@ function ec2Deploy() {
     case $SERVER_NAME in
         server)
             chmod 400 $EC2_KEYPAIR
-            ssh -i $EC2_KEYPAIR $EC2_HOST 'git -C ~/sexy-girls pull && ~/sexy-girls/deploy.sh build && ~/sexy-girls/deploy.sh up prod'
+            ssh -i $EC2_KEYPAIR $EC2_HOST 'git -C ~/sexy-girls pull && ~/sexy-girls/deploy.sh build prod && ~/sexy-girls/deploy.sh up prod'
             ;;
         scrape)
             chmod 400 $SCRAPE_KEYPAIR
