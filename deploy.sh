@@ -136,6 +136,8 @@ case $COMMAND in
         ;;
 
     log)
+        export DEPLOY_ENV=$2
+        
         docker-compose -f devops/docker-compose.yml logs -f ${2}
         [ $? -ne 0 ] && echo -e "\nPLEASE USE:\n"$(docker-compose -f devops/docker-compose.yml ps --services) "\n" && exit 0
         ;;
