@@ -212,7 +212,7 @@ def prodPageScrape():
     if len(statuses) > 0:
         pageIndex = statuses[0]['hotgirlbizPage']
 
-    for index in range(pageIndex, 364):
+    for index in range(pageIndex, 100):
         pageUrl = originUrl + '/page/' + str(index)
         albumObjLi = albumScrapeListofAlbum(pageUrl)
         for album in albumObjLi:
@@ -222,11 +222,16 @@ def prodPageScrape():
         config = {
             'hotgirlbizPage': index
         }
+
+        saveToStatus = index
+        if saveToStatus > 90:
+            saveToStatus = 1
+
         statuses = Status.objects()
         if len(statuses) > 0:
             status = statuses[0]
             Status.objects(id=status['id']).update_one(
-                set__hotgirlbizPage=index)
+                set__hotgirlbizPage=saveToStatus)
         else:
             Status(**config).save()
 

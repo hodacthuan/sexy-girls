@@ -178,5 +178,5 @@ STATICFILES_DIRS = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'sexybaby.cron.my_scheduled_job', '>> /tmp/scheduled_job.log')
+    ('0 1 * * *', 'sexybaby.cron.my_scheduled_job', '>> /tmp/scheduled_job.log')
 ]

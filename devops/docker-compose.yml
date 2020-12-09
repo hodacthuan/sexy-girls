@@ -55,7 +55,7 @@ services:
       context: ..
       dockerfile: devops/Dockerfile-server
     container_name: sg-scrape
-    command: python3 /app/manage.py scrape hotgirlbiz
+    command: bash -c "python3 /app/manage.py crontab add && tail -f /dev/null"
     volumes:
       - ../server:/app
     environment:
